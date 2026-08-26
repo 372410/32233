@@ -1,1 +1,1 @@
-# Painting-shop-Manufacturing-Execution-System
+# 专属于涂装行业的MES系统原型设计
