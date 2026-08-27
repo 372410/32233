@@ -2,7 +2,6 @@
    涂装MES系统原型 - 样式表
    配色：深蓝侧栏 + 蓝色主色调 + 浅灰内容区
    ============================================ */
-
 /* 重置 */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 *:focus { outline: none; }
