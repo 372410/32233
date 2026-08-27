@@ -1978,3 +1978,389 @@ textarea.form-input { height: auto; padding: 8px 12px; resize: vertical; }
     .echart-box { height: 240px; }
     .qc-pie-box { height: 300px; }
 }
+
+/* ============================================================
+   质检报告工作台（独立页面：批量检验 / 单独检验）
+   入口：来料检/过程检/成品入库检/出货检 的"添加"按钮
+   ============================================================ */
+
+/* ---------- ① 检验类型切换 + 实时统计条 ---------- */
+.qce-mode-card .card-body { display: flex; gap: 24px; align-items: stretch; flex-wrap: wrap; }
+.qce-mode-left { flex: 1 1 360px; min-width: 0; }
+.qce-mode-caption { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+.qce-mode-switch { display: inline-flex; gap: 4px; background: #eef2f7; border: 1px solid #e4e9f0; border-radius: 10px; padding: 4px; }
+.qce-mode-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 24px; border: none; border-radius: 8px;
+    background: transparent; font-size: 14px; color: var(--text-regular);
+    cursor: pointer; transition: all .25s; white-space: nowrap;
+}
+.qce-mode-btn:hover { color: var(--primary); }
+.qce-mode-ico { font-size: 16px; }
+.qce-mode-name { font-weight: 600; }
+.qce-mode-desc { font-size: 11px; color: var(--text-secondary); font-weight: 400; }
+/* 批量检验选中：蓝色渐变 */
+.qce-mode-btn.active {
+    background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+    color: #fff; box-shadow: 0 3px 12px rgba(24, 144, 255, 0.4);
+}
+.qce-mode-btn.active .qce-mode-desc { color: rgba(255, 255, 255, 0.85); }
+/* 单独检验选中：青色渐变（与批量区分） */
+.qce-mode-btn.qce-mode-single.active {
+    background: linear-gradient(135deg, #13c2c2 0%, #08979c 100%);
+    box-shadow: 0 3px 12px rgba(19, 194, 194, 0.4);
+}
+.qce-mode-tip {
+    margin-top: 12px; font-size: 12px; color: var(--text-regular);
+    background: #f5f7fa; border-left: 3px solid var(--primary);
+    border-radius: 6px; padding: 9px 12px; line-height: 1.7;
+}
+
+/* 实时统计条：总数(蓝) 合格(绿) 异常(红) 合格率 + 综合判定 */
+.qce-live {
+    flex: 1 1 560px; min-width: 0;
+    display: grid; grid-template-columns: repeat(4, 1fr) auto;
+    gap: 10px; align-items: stretch;
+    background: linear-gradient(135deg, #f5faff 0%, #eef6ff 100%);
+    border: 1px solid #d6e8ff; border-radius: 10px; padding: 12px;
+}
+.qce-live-item {
+    background: #fff; border: 1px solid #e3efff; border-radius: 8px;
+    padding: 10px 12px; display: flex; flex-direction: column; gap: 4px;
+    min-width: 0; box-shadow: 0 1px 4px rgba(24, 144, 255, 0.06);
+}
+.qce-live-label { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+.qce-live-num { font-size: 24px; font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; line-height: 1.15; }
+.qce-live-item.ok .qce-live-num { color: var(--success); }
+.qce-live-item.bad .qce-live-num { color: var(--danger); }
+.qce-live-num.warn { color: var(--warning); }
+.qce-live-num.bad { color: var(--danger); }
+.qce-verdict { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 0 4px; }
+.qce-verdict-label { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+.qce-verdict-tag {
+    padding: 7px 16px; border-radius: 8px; font-size: 17px; font-weight: 700;
+    letter-spacing: 3px; border: 2px dashed; white-space: nowrap;
+}
+.qce-verdict-tag.pass { color: var(--success); border-color: var(--success); background: rgba(82, 196, 26, 0.08); }
+.qce-verdict-tag.fail { color: var(--danger); border-color: var(--danger); background: rgba(255, 77, 79, 0.08); }
+.qce-verdict-tag.wait { color: var(--text-secondary); border-color: var(--border-color); background: #f5f7fa; font-size: 14px; letter-spacing: 2px; }
+
+/* ---------- ③ 工单关联信息（自动带出，关键信息颜色提示） ---------- */
+.qce-auto-title { font-size: 13px; color: var(--text-secondary); margin: 4px 0 10px; }
+.qce-auto-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+.qce-auto-item {
+    display: flex; flex-direction: column; gap: 5px; min-width: 0;
+    background: #fafbfc; border: 1px solid var(--border-light); border-radius: 8px; padding: 10px 12px;
+    transition: border-color .2s, box-shadow .2s;
+}
+.qce-auto-item:hover { border-color: #b7d7ff; box-shadow: 0 2px 8px rgba(24, 144, 255, 0.1); }
+.qce-auto-k { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+.qce-auto-v { font-size: 14px; font-weight: 600; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qce-auto-v.code { color: var(--primary); font-family: Consolas, Monaco, monospace; letter-spacing: 0.5px; }
+.qce-auto-v.customer { color: #08979c; }
+.qce-auto-v.qty { color: #722ed1; }
+.qce-auto-v.date { color: #d48806; }
+.qce-auto-item.empty .qce-auto-v { color: var(--text-placeholder); font-weight: 400; }
+
+/* ---------- 卡片副标题 / 表单辅助 ---------- */
+.qce-card-sub { font-size: 12px; color: var(--text-secondary); font-weight: 400; }
+.qce-form-full { flex: none !important; width: 100%; }
+.qce-form-full .form-textarea { flex: 1; width: auto; min-height: 72px; }
+.qce-auto-tip {
+    display: inline-block; margin-left: 6px; padding: 0 6px;
+    font-size: 11px; line-height: 16px; color: #096dd9;
+    background: #e6f7ff; border: 1px solid #91d5ff; border-radius: 10px;
+    vertical-align: 1px; font-weight: 400;
+}
+
+/* ---------- ④ 批量检验：只读计算结果着色 ---------- */
+#qt-defect.qce-input-bad { color: var(--danger); font-weight: 700; background: #fff1f0; }
+#qt-rate.qce-rate-ok { color: var(--success); font-weight: 700; background: #f6ffed; }
+#qt-rate.qce-rate-warn { color: #d48806; font-weight: 700; background: #fffbe6; }
+#qt-rate.qce-rate-bad { color: var(--danger); font-weight: 700; background: #fff1f0; }
+.qce-def-table { min-width: 980px; }
+
+/* ---------- 缺陷等级下拉颜色提示（批量/单独共用） ---------- */
+.pr-input.qce-level-serious { border-color: #f0c878; background: #fffdf4; color: #ad6800; font-weight: 600; }
+.pr-input.qce-level-fatal { border-color: #ff9d94; background: #fff5f5; color: #cf1322; font-weight: 700; }
+
+/* ---------- ⑤ 单独检验：结果颜色 + 不合格行红色高亮 ---------- */
+.qce-single-table { min-width: 1100px; }
+.qce-single-table select.pr-input.qce-result-ok { color: var(--success); border-color: #a8dba8; background: #f6ffed; font-weight: 600; }
+.qce-single-table select.pr-input.qce-result-bad { color: var(--danger); border-color: #ffa39e; background: #fff1f0; font-weight: 700; }
+.qce-single-table tr.qce-row-bad td { background: #fff5f5; }
+.qce-single-table tr.qce-row-bad:hover td { background: #ffece8; }
+.qce-single-tip {
+    margin-top: 12px; font-size: 12px; color: var(--text-regular);
+    background: #f5f7fa; border-left: 3px solid #13c2c2; border-radius: 6px;
+    padding: 9px 12px; line-height: 1.8;
+}
+.qce-tip-ok { color: var(--success); font-weight: 700; }
+.qce-tip-bad { color: var(--danger); font-weight: 700; }
+.qce-head-btns { display: flex; gap: 8px; }
+
+/* ---------- ⑥ 过程图片上传行（工作台与弹窗共用） ---------- */
+.qt-upload-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; flex: 1; min-width: 0; }
+.qt-upload-row .eq-img-upload { width: 96px; height: 96px; }
+.qt-photo-item { position: relative; display: inline-flex; }
+.qt-photo-x {
+    position: absolute; top: -7px; right: -7px; width: 18px; height: 18px;
+    border-radius: 50%; background: var(--danger); color: #fff;
+    font-size: 12px; line-height: 17px; text-align: center; cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); transition: transform .15s;
+}
+.qt-photo-x:hover { transform: scale(1.15); }
+
+/* ---------- ⑦ 底部操作条 ---------- */
+.qce-footer {
+    display: flex; justify-content: flex-end; gap: 10px;
+    background: #fff; border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 14px 20px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 1400px) {
+    .qce-auto-strip { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 1100px) {
+    .qce-live { grid-template-columns: repeat(2, 1fr); }
+    .qce-verdict { grid-column: 1 / -1; flex-direction: row; gap: 12px; }
+}
+@media (max-width: 768px) {
+    .qce-auto-strip { grid-template-columns: repeat(2, 1fr); }
+    .qce-mode-switch { width: 100%; }
+    .qce-mode-btn { flex: 1; justify-content: center; padding: 10px 12px; }
+    .qce-footer { position: sticky; bottom: 0; }
+}
+
+/* ============================================================
+   生产订单：设置工艺路线弹窗（更多 → 设置工艺路线）
+   布局仿目标效果图：横向表单 + 只读订单编号 + 工艺路线下拉
+   关键信息颜色：订单编号(蓝) 数量(紫) 交付日期(橙) 当前路线(青)
+   工序预览：质检(绿) 前处理(青) 涂装(蓝) 其他(紫)
+   ============================================================ */
+.po-route-modal { min-width: min(620px, calc(100vw - 32px)); }
+
+/* 标题：图标 + 文字 */
+.po-route-title { display: inline-flex; align-items: center; gap: 10px; }
+.po-route-title-ico {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 8px; font-size: 16px;
+    background: linear-gradient(135deg, #e6f4ff 0%, #d6e8ff 100%);
+    border: 1px solid #b7d7ff;
+}
+
+/* 订单信息条（自动带出，浅蓝底色块） */
+.po-route-order {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+    background: linear-gradient(135deg, #f5faff 0%, #eef6ff 100%);
+    border: 1px solid #d6e8ff; border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 20px;
+}
+.po-route-order-item { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.po-route-k { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+.po-route-v {
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.po-route-v.code { color: var(--primary); font-family: Consolas, Monaco, monospace; letter-spacing: .5px; }
+.po-route-v.qty { color: #722ed1; }
+.po-route-v.date { color: #d48806; }
+.po-route-v.route { color: #08979c; }
+
+/* 横向表单：label 右对齐 + 控件（仿目标图） */
+.po-route-form { display: flex; flex-direction: column; gap: 18px; }
+.po-route-field { display: flex; align-items: flex-start; gap: 12px; }
+.po-route-label {
+    width: 96px; flex-shrink: 0; text-align: right;
+    font-size: 13px; color: var(--text-regular); line-height: 34px;
+}
+.po-route-label .required { color: var(--danger); margin-right: 2px; }
+.po-route-control { flex: 1; min-width: 0; }
+
+/* 只读订单编号：浅灰底 + 蓝色等宽字体突出 */
+.po-route-readonly {
+    background: #f5f7fa; cursor: not-allowed;
+    color: var(--primary); font-weight: 600;
+    font-family: Consolas, Monaco, monospace; letter-spacing: .5px;
+}
+
+/* 工序预览区（浅灰卡片 + 彩色流程 chips） */
+.po-route-steps-box {
+    margin-top: 20px; padding: 12px 14px;
+    background: #fafbfc; border: 1px solid var(--border-light); border-radius: 10px;
+}
+.po-route-steps-title {
+    font-size: 13px; font-weight: 600; color: var(--text-regular);
+    margin-bottom: 10px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+}
+.po-route-steps-sub { font-size: 11px; font-weight: 400; color: var(--text-secondary); margin-left: 2px; }
+.po-route-chip-count {
+    margin-left: auto; font-size: 11px; font-weight: 600; color: var(--primary);
+    background: #e6f4ff; border: 1px solid #91caff; border-radius: 999px; padding: 1px 10px;
+}
+.po-route-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; row-gap: 8px; }
+.po-route-chip {
+    display: inline-flex; align-items: center;
+    padding: 3px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; border: 1px solid;
+    white-space: nowrap;
+}
+.po-route-chip.qc    { color: #389e0d; background: #f6ffed; border-color: #b7eb8f; }
+.po-route-chip.prep  { color: #08979c; background: #e6fffb; border-color: #87e8de; }
+.po-route-chip.paint { color: #096dd9; background: #e6f4ff; border-color: #91caff; }
+.po-route-chip.other { color: #722ed1; background: #f9f0ff; border-color: #d3adf7; }
+.po-route-arrow { color: #b8c4d4; font-size: 14px; font-weight: 700; }
+.po-route-steps-empty { font-size: 12px; color: var(--text-placeholder); }
+
+/* 底部提示（橙色警示条） */
+.po-route-tip {
+    margin-top: 16px; display: flex; align-items: flex-start; gap: 6px;
+    font-size: 12px; line-height: 1.6; color: #d48806;
+    background: #fffbe6; border: 1px solid #ffe58f; border-radius: 8px;
+    padding: 8px 12px;
+}
+
+/* 弹窗窄屏适配 */
+@media (max-width: 768px) {
+    .po-route-order { grid-template-columns: repeat(2, 1fr); }
+    .po-route-field { flex-direction: column; gap: 6px; }
+    .po-route-label { width: auto; text-align: left; line-height: 1.4; }
+}
+
+/* ============================================================
+   生产订单：结案确认弹窗（更多 → 结案）
+   进度条分色：100%绿 / ≥80%蓝 / ≥50%橙 / <50%红
+   统计色块：已完成(绿) 未完成(红) 合格(绿) 不合格(红)
+   警示条：未完成工序>0 红色强警示 / 全部完成 绿色安全提示
+   ============================================================ */
+.po-close-modal { min-width: min(620px, calc(100vw - 32px)); }
+
+/* 标题图标：橙色调（区别于工艺路线的蓝色） */
+.po-route-title-ico.po-close-ico {
+    background: linear-gradient(135deg, #fff7e6 0%, #ffe7ba 100%);
+    border-color: #ffd591;
+}
+
+/* 进度汇总区 */
+.po-close-progress {
+    background: #fafbfc; border: 1px solid var(--border-light); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 14px;
+}
+.po-close-progress-head {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+}
+.po-close-progress-title { font-size: 13px; font-weight: 600; color: var(--text-regular); }
+.po-close-pct { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.po-close-pct.ok   { color: var(--success); }
+.po-close-pct.mid  { color: var(--primary); }
+.po-close-pct.warn { color: var(--warning); }
+.po-close-pct.bad  { color: var(--danger); }
+
+/* 进度条 */
+.po-close-bar {
+    height: 8px; border-radius: 999px; background: #eef1f6; overflow: hidden;
+}
+.po-close-bar-fill {
+    height: 100%; border-radius: 999px; transition: width .35s ease;
+}
+.po-close-bar-fill.ok   { background: linear-gradient(90deg, #95de64 0%, var(--success) 100%); }
+.po-close-bar-fill.mid  { background: linear-gradient(90deg, #69c0ff 0%, var(--primary) 100%); }
+.po-close-bar-fill.warn { background: linear-gradient(90deg, #ffc53d 0%, var(--warning) 100%); }
+.po-close-bar-fill.bad  { background: linear-gradient(90deg, #ff7875 0%, var(--danger) 100%); }
+
+/* 统计色块行 */
+.po-close-stats {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 12px;
+}
+.po-close-stat {
+    background: #fff; border: 1px solid var(--border-light); border-radius: 8px;
+    padding: 8px 10px; display: flex; flex-direction: column; gap: 3px; min-width: 0;
+}
+.po-close-stat-k { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+.po-close-stat-v { font-size: 18px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.po-close-stat-v.ok  { color: var(--success); }
+.po-close-stat-v.bad { color: var(--danger); }
+
+/* 状态流转预览：未完成 → 已完成 */
+.po-close-status {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px 14px; margin-bottom: 14px;
+    background: #f5faff; border: 1px solid #d6e8ff; border-radius: 10px;
+}
+.po-close-status-k { font-size: 13px; color: var(--text-secondary); }
+.po-close-status-arrow { color: var(--primary); font-size: 16px; font-weight: 700; }
+
+/* 警示条：红色强警示（有未完成工序）/ 绿色安全提示（全部完成） */
+.po-close-warn {
+    display: flex; align-items: flex-start; gap: 10px;
+    border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.7;
+}
+.po-close-warn.block {
+    background: #fff1f0; border: 1px solid #ffa39e; color: #8c3532;
+}
+.po-close-warn.safe {
+    background: #f6ffed; border: 1px solid #b7eb8f; color: #38512e;
+}
+.po-close-warn-ico { font-size: 18px; line-height: 1.4; }
+.po-close-warn-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.po-close-warn.block .po-close-warn-title { color: var(--danger); }
+.po-close-warn.safe .po-close-warn-title { color: var(--success); }
+.po-close-warn-title b { font-size: 16px; }
+.po-close-warn-list { margin: 2px 0 0 0; padding-left: 18px; }
+.po-close-warn-list li { margin: 1px 0; }
+.po-close-warn.block .po-close-warn-list b { color: var(--danger); }
+
+/* 弹窗窄屏适配 */
+@media (max-width: 768px) {
+    .po-close-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================================
+   生产订单：下发/撤回任务确认弹窗 + 报工二维码弹窗（简单样式）
+   确认弹窗仿目标图1：居中提示语 + 订单号蓝色高亮 + 取消/确定
+   二维码弹窗仿目标图2：订单编号 + 大二维码 + 引导语 + 关闭
+   ============================================================ */
+
+/* ---- 下发/撤回确认弹窗（小尺寸居中） ---- */
+.po-confirm-modal { min-width: min(420px, calc(100vw - 32px)); }
+.po-confirm-modal .modal-body { padding: 30px 24px; }
+.po-confirm-msg {
+    font-size: 14px; color: var(--text-regular); line-height: 1.9;
+    text-align: center;
+}
+/* 提示语中的订单号：蓝色等宽字体高亮 */
+.po-confirm-order {
+    color: var(--primary); font-family: Consolas, Monaco, monospace;
+    font-weight: 600; padding: 0 2px; letter-spacing: .5px;
+}
+
+/* 撤回图标：橙色调（下发保持默认蓝） */
+.po-route-title-ico.po-ico-orange {
+    background: linear-gradient(135deg, #fff7e6 0%, #ffe7ba 100%);
+    border-color: #ffd591;
+}
+
+/* ---- 报工二维码弹窗（居中纵向布局） ---- */
+.po-qr-modal { min-width: min(380px, calc(100vw - 32px)); }
+.po-qr-modal .modal-body {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 14px; padding: 22px 24px 18px;
+}
+/* 订单编号：标签灰 + 编号黑色加粗 */
+.po-qr-order { font-size: 14px; color: var(--text-secondary); }
+.po-qr-order b { color: var(--text-primary); font-weight: 600; margin-left: 2px; font-family: Consolas, Monaco, monospace; letter-spacing: .5px; }
+/* 二维码容器：白底卡片 + 细边框 + 柔和阴影 */
+.po-qr-img {
+    padding: 10px; background: #fff;
+    border: 1px solid var(--border-light); border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+.po-qr-img svg { display: block; }
+/* 引导提示：灰色小字居中 */
+.po-qr-hint { font-size: 13px; color: var(--text-secondary); }
+
+/* 二维码窄屏适配 */
+@media (max-width: 480px) {
+    .po-qr-img svg { width: 200px; height: 200px; }
+}

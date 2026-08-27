@@ -974,6 +974,15 @@ const PAGE_CONFIG = {
     // 能耗记录编辑器（独立页面，不在侧边菜单显示）
     'energy-edit': { type: 'custom', render: 'renderEnergyEditPage', title: '添加能耗记录' },
 
+    // 质检报告工作台（独立页面：质检任务添加/编辑；批量检验 / 单独检验两种模式）
+    'qc-report-edit': { type: 'custom', render: 'renderQcReportEditPage', title: '质检报告工作台',
+        inspectorOptions: ['张三', '李四', '王五', '赵六'],
+        defectLevelOptions: ['一般', '严重', '致命'],
+        defectTypeOptions: ['外观不合格', '性能不合格', '尺寸不合格', '包装不合格', '材质不合格'],
+        defectReasonOptions: ['漆膜颗粒杂质', '针孔缺陷', '膜厚不足', '色差超标', '表面划伤', '局部变形', '封口不严', '其他'],
+        handleOptions: ['返工返修', '报废', '让步接收', '退货', '技术评审'],
+    },
+
     // ===== 数据采集（对齐真实系统：数据分组/数据管理/数据记录/加料记录） =====
     // 数据分组（增删联动数据管理的"所属分组"选项）
     'dc-group': { type: 'table', title: '数据分组',

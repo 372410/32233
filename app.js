@@ -23,6 +23,8 @@ function renderSidebar() {
     let activePage = currentPage;
     if (currentPage === 'maintenance-task-exec') activePage = 'maintenance-task';
     if (currentPage === 'qc-report' && window._qcReportFrom) activePage = window._qcReportFrom;
+    // 质检报告工作台保持来源菜单（来料检/出货检/过程检/成品入库检）高亮
+    if (currentPage === 'qc-report-edit' && window._qtForm && window._qtForm.from) activePage = window._qtForm.from;
     if (INV_EDIT_FROM[currentPage]) activePage = INV_EDIT_FROM[currentPage];
     // 能耗记录编辑页/数据采集编辑页保持来源菜单高亮
     if (currentPage === 'energy-edit') activePage = 'energy-record';
@@ -144,6 +146,7 @@ function navigateTo(pageId, label) {
     // 能耗/数据采集：离开编辑页时清理草稿
     if (pageId !== 'energy-edit') { window._enForm = null; window._enEditId = null; }
     if (pageId !== 'dc-batch') { window._dcForm = null; window._dcEditId = null; }
+    if (pageId !== 'qc-report-edit') { window._qtForm = null; } // 离开质检报告工作台时清空草稿
     if (pageId !== 'dc-view') { window._dcViewId = null; }
     if (pageId !== 'dc-chart') { window._dcChartId = null; }
 
@@ -183,6 +186,9 @@ function navigateTo(pageId, label) {
         content.innerHTML = renderQcSinglePage();
     } else if (config && config.type === 'custom' && config.render === 'renderQcReportPage') {
         content.innerHTML = renderQcReportPage();
+    } else if (config && config.type === 'custom' && config.render === 'renderQcReportEditPage') {
+        content.innerHTML = renderQcReportEditPage();
+        qtCalcRefresh(); // 渲染后立即计算顶部实时统计与综合判定
     } else if (config && config.type === 'custom' && config.render === 'renderInvStockPage') {
         content.innerHTML = renderInvStockPage();
     } else if (config && config.type === 'custom' && config.render === 'renderInvAlertPage') {
@@ -1046,7 +1052,374 @@ function poSave(id) {
 // 更多菜单项点击
 function poMenuAction(action, id) {
     closePoMore();
+    // 设置工艺路线：打开专用弹窗（订单信息 + 工艺路线选择 + 工序预览）
+    if (action === '设置工艺路线') { poShowRouteModal(id); return; }
+    // 结案：打开结案确认弹窗（订单信息 + 进度汇总 + 风险提示）
+    if (action === '结案') { poShowCloseModal(id); return; }
+    // 下发任务 / 撤回任务：简单确认弹窗（仿目标图1：标题 + 提示语 + 取消/确定）
+    if (action === '下发任务') { poShowDispatchModal(id, 'dispatch'); return; }
+    if (action === '撤回任务') { poShowDispatchModal(id, 'withdraw'); return; }
+    // 报工：二维码弹窗（仿目标图2：标题 + 订单编号 + 大二维码 + 引导语 + 关闭）
+    if (action === '报工') { poShowQrModal(id); return; }
+    // 打印：不做真实打印，仅提示成功
+    if (action === '打印') { showMsg('打印成功'); return; }
     alert(action);
+}
+
+// ============================================================
+// 生产订单：下发/撤回任务确认弹窗（更多 → 下发任务 / 撤回任务）
+// 仿目标图1的简单样式：图标+标题、居中提示语（订单号蓝色高亮）、取消/确定
+// 确定后仅提示成功，不改动订单数据（原型演示）
+// ============================================================
+
+function poShowDispatchModal(id, kind) {
+    const row = getPoById(id);
+    if (!row) { showMsg('未找到该生产订单', 'error'); return; }
+    window._poDispatch = { id, kind };
+    const isDispatch = kind === 'dispatch';
+    const title = isDispatch ? '确认下发' : '确认撤回';
+    const msg = `确定要${isDispatch ? '下发' : '撤回'}生产订单 <b class="po-confirm-order">${row.orderNo}</b> 的生产任务吗？`;
+    const html = `<div class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal po-confirm-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="modal-title po-route-title"><span class="po-route-title-ico ${isDispatch ? '' : 'po-ico-orange'}">${isDispatch ? '📤' : '↩️'}</span>${title}</span>
+                <span class="modal-close" onclick="closeModalDirect()">×</span>
+            </div>
+            <div class="modal-body"><div class="po-confirm-msg">${msg}</div></div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModalDirect()">取 消</button>
+                <button class="btn btn-primary" onclick="poDoDispatch()">确 定</button>
+            </div>
+        </div>
+    </div>`;
+    document.getElementById('modalContainer').innerHTML = html;
+}
+
+// 确认下发/撤回：关闭弹窗并提示成功（不改数据）
+function poDoDispatch() {
+    const ctx = window._poDispatch;
+    closeModalDirect();
+    window._poDispatch = null;
+    if (!ctx) return;
+    showMsg(ctx.kind === 'dispatch' ? '任务已下发' : '任务已撤回');
+}
+
+// ============================================================
+// 生产订单：报工二维码弹窗（更多 → 报工）
+// 仿目标图2：标题"生产订单报工二维码" + 订单编号（固定示例 MO20260821005）
+// + 大尺寸二维码 + "扫描二维码进行报工" + 关闭按钮
+// 二维码为原型演示图案（按编号生成固定的伪随机模块，无真实编码信息）
+// ============================================================
+
+// 生成演示用二维码 SVG：三个定位角 + 校正图形 + 时序线 + 伪随机数据模块
+function poQrSvg(text, size) {
+    const N = 25;                       // 模块数（version 2 规格）
+    const cell = size / N;
+    // 由编号生成固定伪随机序列（同一编号每次生成相同图案）
+    let seed = 0;
+    for (let i = 0; i < text.length; i++) seed = (seed * 31 + text.charCodeAt(i)) >>> 0;
+    const rand = () => { seed = (seed * 1103515245 + 12345) >>> 0; return (seed >>> 16) / 65536; };
+
+    // 三个定位角（7×7）位置：左上 / 右上 / 左下
+    const FINDERS = [[0, 0], [0, N - 7], [N - 7, 0]];
+    const inFinder = (r, c) => FINDERS.some(([r0, c0]) => r >= r0 && r < r0 + 7 && c >= c0 && c < c0 + 7);
+    // 定位角内部深色：外环 + 中心 3×3
+    const finderDark = (r, c) => {
+        const [r0, c0] = FINDERS.find(([rr, cc]) => r >= rr && r < rr + 7 && c >= cc && c < cc + 7);
+        const dr = r - r0, dc = c - c0;
+        return (dr === 0 || dr === 6 || dc === 0 || dc === 6) || (dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4);
+    };
+    // 定位角外圈 1 模块白色分隔环
+    const inSeparator = (r, c) => FINDERS.some(([r0, c0]) =>
+        r >= r0 - 1 && r <= r0 + 7 && c >= c0 - 1 && c <= c0 + 7 && !(r >= r0 && r < r0 + 7 && c >= c0 && c < c0 + 7));
+    // 校正图形（5×5）右下区域
+    const AR = 16, AC = 16;
+    const inAlign = (r, c) => r >= AR && r < AR + 5 && c >= AC && c < AC + 5;
+    const alignDark = (r, c) => {
+        const dr = r - AR, dc = c - AC;
+        return (dr === 0 || dr === 4 || dc === 0 || dc === 4) || (dr === 2 && dc === 2);
+    };
+    // 时序线：第6行/第6列黑白交替
+    const inTiming = (r, c) => (r === 6 && c >= 8 && c <= N - 9) || (c === 6 && r >= 8 && r <= N - 9);
+
+    let rects = '';
+    for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+            let dark;
+            if (inSeparator(r, c)) continue;                                   // 白色分隔环留白
+            else if (inFinder(r, c)) dark = finderDark(r, c);
+            else if (inAlign(r, c)) dark = alignDark(r, c);
+            else if (inTiming(r, c)) dark = (r === 6 ? c : r) % 2 === 0;
+            else dark = rand() > 0.5;
+            if (dark) rects += `<rect x="${(c * cell).toFixed(2)}" y="${(r * cell).toFixed(2)}" width="${cell.toFixed(2)}" height="${cell.toFixed(2)}" fill="#1a1a1a"/>`;
+        }
+    }
+    return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" role="img" aria-label="报工二维码"><rect width="${size}" height="${size}" fill="#ffffff"/>${rects}</svg>`;
+}
+
+// 打开报工二维码弹窗
+function poShowQrModal(id) {
+    const orderNo = 'MO20260821005'; // 固定示例编号（与目标图2一致，原型演示）
+    const html = `<div class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal po-qr-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="modal-title po-route-title"><span class="po-route-title-ico">📱</span>生产订单报工二维码</span>
+                <span class="modal-close" onclick="closeModalDirect()">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="po-qr-order">订单编号：<b>${orderNo}</b></div>
+                <div class="po-qr-img">${poQrSvg(orderNo, 240)}</div>
+                <div class="po-qr-hint">扫描二维码进行报工</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModalDirect()">关 闭</button>
+            </div>
+        </div>
+    </div>`;
+    document.getElementById('modalContainer').innerHTML = html;
+}
+
+// ============================================================
+// 生产订单：结案确认弹窗（更多 → 结案）
+// 关键信息颜色提示：工单号(蓝) 数量(紫) 交付日期(橙)
+// 进度条分色：100%绿 / ≥80%蓝 / ≥50%橙 / <50%红
+// 已完成工序(绿) 未完成工序(红) 合格数(绿) 不合格数(红)
+// 未完成工序>0 时红色警示条；全部完成时绿色安全提示
+// ============================================================
+
+// 订单整体进度：各工序平均完成率
+function poOverallPct(row) {
+    const nodes = row.nodes || [];
+    if (!nodes.length) return 0;
+    return Math.round(nodes.reduce((s, n) => s + (n.pct || 0), 0) / nodes.length);
+}
+
+// 进度值 → 进度条颜色 class
+function poPctCls(pct) {
+    if (pct >= 100) return 'ok';
+    if (pct >= 80) return 'mid';
+    if (pct >= 50) return 'warn';
+    return 'bad';
+}
+
+// 打开结案确认弹窗
+function poShowCloseModal(id) {
+    const row = getPoById(id);
+    if (!row) { showMsg('未找到该生产订单', 'error'); return; }
+    // 已结案订单：不重复打开弹窗，直接提示
+    if (row.finishStatus === '已完成') { showMsg(`订单 ${row.orderNo} 已结案，无需重复操作`, 'error'); return; }
+    window._poCloseId = id;
+
+    const nodes = row.nodes || [];
+    const pct = poOverallPct(row);
+    const pctCls = poPctCls(pct);
+    const doneCnt = nodes.filter(n => (n.pct || 0) >= 100).length;
+    const undoneCnt = nodes.length - doneCnt;
+    const badQty = row.unqualified || 0;
+
+    // 进度汇总条（进度条 + 彩色统计）
+    const progressHtml = `<div class="po-close-progress">
+        <div class="po-close-progress-head">
+            <span class="po-close-progress-title">订单整体进度</span>
+            <span class="po-close-pct ${pctCls}">${pct}%</span>
+        </div>
+        <div class="po-close-bar"><div class="po-close-bar-fill ${pctCls}" style="width:${pct}%"></div></div>
+        <div class="po-close-stats">
+            <div class="po-close-stat"><span class="po-close-stat-k">总工序数</span><span class="po-close-stat-v">${nodes.length}</span></div>
+            <div class="po-close-stat"><span class="po-close-stat-k">已完成工序</span><span class="po-close-stat-v ok">${doneCnt}</span></div>
+            <div class="po-close-stat"><span class="po-close-stat-k">未完成工序</span><span class="po-close-stat-v ${undoneCnt > 0 ? 'bad' : 'ok'}">${undoneCnt}</span></div>
+            <div class="po-close-stat"><span class="po-close-stat-k">合格数</span><span class="po-close-stat-v ok">${row.qualified != null ? row.qualified : 0}</span></div>
+            <div class="po-close-stat"><span class="po-close-stat-k">不合格数</span><span class="po-close-stat-v ${badQty > 0 ? 'bad' : ''}">${badQty}</span></div>
+        </div>
+    </div>`;
+
+    // 风险提示：有未完成工序 → 红色强警示；全部完成 → 绿色安全提示
+    const warnHtml = undoneCnt > 0
+        ? `<div class="po-close-warn block"><span class="po-close-warn-ico">⛔</span><div>
+            <div class="po-close-warn-title">当前进度 ${pct}%，仍有 <b>${undoneCnt}</b> 道工序未完成，确认结案吗？</div>
+            <ul class="po-close-warn-list">
+                <li>结案后未完成工序将<b>无法继续执行与报工</b>；</li>
+                <li>订单将归档为「已完成」状态，<b>不可恢复、不可再编辑</b>；</li>
+                <li>无法再对该订单下发/撤回任务与追加生产。</li>
+            </ul>
+        </div></div>`
+        : `<div class="po-close-warn safe"><span class="po-close-warn-ico">✅</span><div>
+            <div class="po-close-warn-title">该订单全部工序已完成，可安全结案。</div>
+            <ul class="po-close-warn-list"><li>结案后订单将归档为「已完成」状态，不可恢复。</li></ul>
+        </div></div>`;
+
+    // 状态流转预览：未完成 → 已完成
+    const statusHtml = `<div class="po-close-status">
+        <span class="po-close-status-k">完成状态变更</span>
+        <span class="po-status-ing">未完成</span>
+        <span class="po-close-status-arrow">→</span>
+        <span class="po-status-done">已完成</span>
+    </div>`;
+
+    const html = `<div class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal po-close-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="modal-title po-route-title"><span class="po-route-title-ico po-close-ico">🏁</span>结案确认</span>
+                <span class="modal-close" onclick="closeModalDirect()">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="po-route-order">
+                    <div class="po-route-order-item"><span class="po-route-k">内部工单号</span><span class="po-route-v code" title="${row.orderNo || '-'}">${row.orderNo || '-'}</span></div>
+                    <div class="po-route-order-item"><span class="po-route-k">客户单号</span><span class="po-route-v" title="${row.customerOrderNo || '-'}">${row.customerOrderNo || '-'}</span></div>
+                    <div class="po-route-order-item"><span class="po-route-k">产品名称</span><span class="po-route-v" title="${row.productName || '-'}">${row.productName || '-'}</span></div>
+                    <div class="po-route-order-item"><span class="po-route-k">生产数量</span><span class="po-route-v qty">${row.quantity != null ? row.quantity : '-'}</span></div>
+                    <div class="po-route-order-item"><span class="po-route-k">交付日期</span><span class="po-route-v date">${row.deliveryDate || '-'}</span></div>
+                </div>
+                ${progressHtml}
+                ${statusHtml}
+                ${warnHtml}
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModalDirect()">取 消</button>
+                <button class="btn btn-danger" onclick="poDoClose()">确认结案</button>
+            </div>
+        </div>
+    </div>`;
+    document.getElementById('modalContainer').innerHTML = html;
+}
+
+// 执行结案（写回订单状态并刷新列表）
+function poDoClose() {
+    const row = getPoById(window._poCloseId);
+    if (!row) { closeModalDirect(); return; }
+    if (row.finishStatus === '已完成') {
+        closeModalDirect();
+        showMsg(`订单 ${row.orderNo} 已结案，无需重复操作`, 'error');
+        return;
+    }
+    row.finishStatus = '已完成';
+    closeModalDirect();
+    navigateTo('production-order', '生产订单');
+    showMsg(`订单 ${row.orderNo} 已结案归档`);
+}
+
+// ============================================================
+// 生产订单：设置工艺路线弹窗（更多 → 设置工艺路线）
+// 布局仿目标效果图：横向表单（label 右对齐）+ 只读订单编号 + 工艺路线下拉
+// 关键信息颜色提示：订单编号(蓝) 数量(紫) 交付日期(橙) 当前路线(青)
+// 选择路线后自动预览工序流程（质检绿 / 前处理青 / 涂装蓝）
+// ============================================================
+
+// 工艺路线下拉选项：现有订单已用路线 + 工艺路线库（工序管理-工艺路线）
+function poRouteOptions() {
+    const used = [];
+    (PAGE_CONFIG['production-order'].data || []).forEach(d => {
+        if (d.route && !used.includes(d.route)) used.push(d.route);
+    });
+    ((PAGE_CONFIG['process-route'] || {}).data || []).forEach(r => {
+        if (r.name && !used.includes(r.name)) used.push(r.name);
+    });
+    return used;
+}
+
+// 路线 → 工序名列表（优先取工艺路线库的工序明细，否则按“+”拆分）
+function poRouteStepNames(route) {
+    if (!route) return [];
+    const lib = (PAGE_CONFIG['process-route'] || {}).data || [];
+    const hit = lib.find(r => r.name === route);
+    if (hit && hit.steps && hit.steps.length) return hit.steps.map(s => s.name);
+    return String(route).split('+').map(s => s.trim()).filter(Boolean);
+}
+
+// 工序类型 → 颜色分类（质检=绿 / 前处理=青 / 涂装=蓝 / 其他=紫）
+function poRouteStepCls(name) {
+    if (/检|验/.test(name)) return 'qc';
+    if (/打磨|退漆|前处理|上挂|下挂|挂件|防涂|包装|入库/.test(name)) return 'prep';
+    if (/电泳|喷|涂|固化|烘烤|冷却/.test(name)) return 'paint';
+    return 'other';
+}
+
+// 工序预览：彩色流程 chips + 工序数统计
+function poRoutePreview(route) {
+    const box = document.getElementById('po-route-steps');
+    if (!box) return;
+    const sel = document.getElementById('po-route-select');
+    if (sel) sel.classList.remove('form-control-error');
+    const names = poRouteStepNames(route);
+    const cnt = document.getElementById('po-route-count');
+    if (cnt) cnt.textContent = names.length ? `共 ${names.length} 道工序` : '';
+    if (!names.length) {
+        box.innerHTML = `<span class="po-route-steps-empty">请先在上方选择工艺路线</span>`;
+        return;
+    }
+    box.innerHTML = names.map((n, i) =>
+        `${i > 0 ? '<span class="po-route-arrow">›</span>' : ''}<span class="po-route-chip ${poRouteStepCls(n)}" title="${n}">${n}</span>`
+    ).join('');
+}
+
+// 打开设置工艺路线弹窗
+function poShowRouteModal(id) {
+    const row = getPoById(id);
+    if (!row) { showMsg('未找到该生产订单', 'error'); return; }
+    window._poRouteId = id;
+    const optHtml = ['<option value="">请选择工艺路线</option>'].concat(poRouteOptions().map(r =>
+        `<option value="${r}" ${r === row.route ? 'selected' : ''}>${r}</option>`)).join('');
+    const html = `<div class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal po-route-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="modal-title po-route-title"><span class="po-route-title-ico">🗺️</span>设置工艺路线</span>
+                <span class="modal-close" onclick="closeModalDirect()">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="po-route-order">
+                    <div class="po-route-order-item"><span class="po-route-k">产品编码</span><span class="po-route-v code" title="${row.productCode || '-'}">${row.productCode || '-'}</span></div>
+                    <div class="po-route-order-item"><span class="po-route-k">产品名称</span><span class="po-route-v" title="${row.productName || '-'}">${row.productName || '-'}</span></div>
+                    <div class="po-route-order-item"><span class="po-route-k">生产数量</span><span class="po-route-v qty">${row.quantity != null ? row.quantity : '-'}</span></div>
+                    <div class="po-route-order-item"><span class="po-route-k">交付日期</span><span class="po-route-v date">${row.deliveryDate || '-'}</span></div>
+                    <div class="po-route-order-item"><span class="po-route-k">当前路线</span><span class="po-route-v route" title="${row.route || '-'}">${row.route || '-'}</span></div>
+                </div>
+                <div class="po-route-form">
+                    <div class="po-route-field">
+                        <label class="po-route-label">生产订单编号</label>
+                        <div class="po-route-control">
+                            <input type="text" class="form-input po-route-readonly" value="${row.orderNo || '-'}" readonly />
+                        </div>
+                    </div>
+                    <div class="po-route-field">
+                        <label class="po-route-label"><span class="required">*</span>工艺路线</label>
+                        <div class="po-route-control">
+                            <select class="form-select" id="po-route-select" onchange="poRoutePreview(this.value)">${optHtml}</select>
+                        </div>
+                    </div>
+                </div>
+                <div class="po-route-steps-box">
+                    <div class="po-route-steps-title">路线工序预览<span class="po-route-steps-sub">选择工艺路线后自动带出</span><span class="po-route-chip-count" id="po-route-count"></span></div>
+                    <div class="po-route-steps" id="po-route-steps"></div>
+                </div>
+                <div class="po-route-tip"><span>⚠</span><span>保存后订单将按所选工艺路线的工序安排生产，请确认路线与产品工艺匹配后再确定。</span></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModalDirect()">取 消</button>
+                <button class="btn btn-primary" onclick="poSaveRoute()">确 定</button>
+            </div>
+        </div>
+    </div>`;
+    document.getElementById('modalContainer').innerHTML = html;
+    poRoutePreview(row.route || '');
+}
+
+// 保存工艺路线（写回订单数据并刷新列表）
+function poSaveRoute() {
+    const row = getPoById(window._poRouteId);
+    if (!row) { closeModalDirect(); return; }
+    const sel = document.getElementById('po-route-select');
+    const val = sel ? sel.value.trim() : '';
+    if (!val) {
+        sel.classList.add('form-control-error');
+        sel.focus();
+        showMsg('请选择工艺路线', 'error');
+        return;
+    }
+    const old = row.route || '无';
+    row.route = val;
+    closeModalDirect();
+    navigateTo('production-order', '生产订单');
+    showMsg(val === old ? `工艺路线已确认：${val}` : `工艺路线已更新：${old} → ${val}`);
 }
 
 // 删除（通用确认弹窗）
@@ -2689,7 +3062,7 @@ function handleButton(action, title) {
             return;
         }
         if (QC_TASK_PAGES.includes(currentPage)) {
-            qtEdit(currentPage);
+            qtAdd(currentPage); // 跳转独立"质检报告工作台"页面（批量检验/单独检验）
             return;
         }
         const formConfig = FORM_CONFIG[currentPage];
@@ -4503,6 +4876,667 @@ function qtSave() {
     window._qtPhotos = [];
     closeModalDirect();
     rerenderCurrentTable();
+}
+
+// ============================================================
+// 质检报告工作台（独立页面：添加质检任务）
+// 检验类型二选一：批量检验（整批汇总）/ 单独检验（逐件录入）
+// 入口：质检任务4页（来料检/过程检/成品入库检/出货检）的"添加"按钮
+// ============================================================
+
+// 客户单号 → 客户名（生产订单数据无客户字段时的反查映射）
+const QT_PO_CUSTOMERS = {
+    'PO-2026-0001': '杭州湾汽配', 'PO-2026-0002': '鼎结数智', 'PO-2026-0003': '赛亦信息',
+    'PO-2026-0004': '黑狐智造', 'PO-2026-0005': '宁波汽配', 'PO-2026-0006': '吉利汽车',
+};
+
+function qtFindOrder(orderNo) {
+    const po = PAGE_CONFIG['production-order'];
+    return po && po.data ? po.data.find(o => o.orderNo === orderNo) : null;
+}
+
+// 客户名称反查：订单 → 既有质检任务数据 → 客户单号映射
+function qtCustomerName(order) {
+    if (!order) return '';
+    if (order.customer) return order.customer;
+    if (order.customerName) return order.customerName;
+    if (order.customerOrderNo && QT_PO_CUSTOMERS[order.customerOrderNo]) return QT_PO_CUSTOMERS[order.customerOrderNo];
+    let found = null;
+    QC_TASK_PAGES.forEach(p => {
+        const c = PAGE_CONFIG[p];
+        if (found || !c || !c.data) return;
+        found = c.data.find(r => r.customerOrderNo === order.customerOrderNo && r.customerName) || null;
+    });
+    return found ? found.customerName : '';
+}
+
+// 工序下拉选项：已选工单取其工艺节点，未选时给通用工序
+function qtProcessOptions(order) {
+    if (order && order.nodes && order.nodes.length) return order.nodes.map(n => n.name);
+    return ['来料检验', '上挂', '打磨检', '电泳', '喷粉', '下挂', '成品入库检', '出货检验'];
+}
+
+// 下拉选项拼接（placeholder 传 null 表示不允许空值）
+function qtOpts(list, selected, placeholder) {
+    const head = placeholder === null ? [] : [`<option value="">${placeholder || '请选择'}</option>`];
+    return head.concat((list || []).map(v => `<option value="${v}" ${v === selected ? 'selected' : ''}>${v}</option>`)).join('');
+}
+
+// 单独检验：检验项目选项（来自"检验项目"页，兜底通用项目）
+function qtItemOptions() {
+    const list = qpItemOptions();
+    return list.length ? list : ['外观缺陷', '膜厚', '附着力', '尺寸', '外观色差', '光泽度', '耐盐雾性', '硬度'];
+}
+
+// 缺陷照片示意类型（按缺陷类型映射）
+function qtDefPhotoKind(type) {
+    return { '外观不合格': 'scratch', '性能不合格': 'particle', '尺寸不合格': 'thick', '包装不合格': 'package', '材质不合格': 'rust' }[type] || 'check';
+}
+// 检验照片示意类型（按检验项目映射）
+function qtItemPhotoKind(item) {
+    return { '膜厚': 'thick', '外观色差': 'color', '外观缺陷': 'scratch', '附着力': 'check', '耐盐雾性': 'check', '光泽度': 'check', '尺寸': 'thick', '硬度': 'check' }[item] || 'check';
+}
+
+// ===== 入口：添加质检任务 → 跳转独立工作台页面 =====
+function qtAdd(page) {
+    const config = PAGE_CONFIG[page] || PAGE_CONFIG['qc-incoming'];
+    const n = new Date(); const p = x => String(x).padStart(2, '0');
+    window._qtPhotos = [];
+    window._qtForm = {
+        from: page,
+        mode: 'batch', // 检验类型：batch=批量检验 / single=单独检验
+        orderNo: '', processName: '', inspector: '',
+        inspectTime: `${n.getFullYear()}-${p(n.getMonth() + 1)}-${p(n.getDate())}T${p(n.getHours())}:${p(n.getMinutes())}`,
+        totalQty: '', passQty: '', defectCodes: '', remark: '',
+        // 批量检验：缺陷记录明细
+        defectRows: [{ type: '', level: '一般', reason: '', handle: '', qty: '', photo: null }],
+        // 单独检验：逐件明细（预置两行示例，便于演示合格/不合格颜色效果）
+        singleRows: [
+            { sn: '', item: '膜厚', result: '合格', level: '', reason: '', handle: '', photo: null },
+            { sn: '', item: '外观缺陷', result: '不合格', level: '一般', reason: '漆膜颗粒杂质', handle: '返工返修', photo: null },
+        ],
+    };
+    navigateTo('qc-report-edit', `添加${config.title}`);
+}
+
+// ===== 返回列表 =====
+function qtBack() {
+    const f = window._qtForm;
+    const from = f && f.from ? f.from : 'qc-incoming';
+    window._qtForm = null;
+    window._qtPhotos = [];
+    navigateTo(from, PAGE_CONFIG[from].title);
+}
+
+// ===== 检验类型切换（批量检验 / 单独检验） =====
+function qtSwitchMode(mode) {
+    const f = window._qtForm;
+    if (!f || f.mode === mode) return;
+    qtSyncDraft();
+    f.mode = mode;
+    navigateTo('qc-report-edit', window._lastPageLabel);
+    showMsg(mode === 'batch' ? '已切换为批量检验：整批汇总录入' : '已切换为单独检验：逐件录入检验结果');
+}
+
+// ===== 草稿快照（切换类型/工单时保留已填内容） =====
+function qtSyncDraft() {
+    const f = window._qtForm;
+    if (!f) return;
+    const grab = (id, key) => { const el = document.getElementById(id); if (el) f[key] = el.value; };
+    grab('qt-order', 'orderNo'); grab('qt-process', 'processName');
+    grab('qt-inspector', 'inspector'); grab('qt-time', 'inspectTime');
+    grab('qt-total', 'totalQty'); grab('qt-pass', 'passQty');
+    grab('qt-codes', 'defectCodes'); grab('qt-remark', 'remark');
+    qtDefSyncRows();
+    qtSingleSyncRows();
+}
+
+// ===== 工单切换：带出产品/客户信息、重建工序下拉 =====
+function qtOrderChangePage(el) {
+    const f = window._qtForm;
+    if (!f) return;
+    f.orderNo = el.value;
+    const order = f.orderNo ? qtFindOrder(f.orderNo) : null;
+    // 重建工序下拉（按工单工艺节点）
+    const procSel = document.getElementById('qt-process');
+    if (procSel) {
+        const opts = qtProcessOptions(order);
+        procSel.innerHTML = qtOpts(opts, '');
+        const prefer = { 'qc-incoming': '来料检验', 'qc-outgoing': '出货检验', 'qc-finished': '成品入库检' }[f.from];
+        if (prefer && opts.indexOf(prefer) > -1) { procSel.value = prefer; f.processName = prefer; }
+        else f.processName = '';
+    }
+    // 自动带出信息条
+    const autoBox = document.getElementById('qceAutoBox');
+    if (autoBox) autoBox.innerHTML = qtAutoInfoHtml(order);
+    // 批量检验：未填总数时带出工单数量
+    const totalEl = document.getElementById('qt-total');
+    if (totalEl && !totalEl.value && order && order.quantity) {
+        totalEl.value = order.quantity;
+        f.totalQty = String(order.quantity);
+    }
+    qtCalcRefresh();
+}
+
+// ===== 工单关联信息（自动带出，带颜色提示） =====
+function qtAutoInfoHtml(order) {
+    const items = [
+        ['📦', '产品编码', order ? (order.productCode || '-') : '-', 'code'],
+        ['🧾', '产品名称', order ? (order.productName || '-') : '-', 'name'],
+        ['👤', '客户名称', order ? (qtCustomerName(order) || '-') : '-', 'customer'],
+        ['#️⃣', '客户单号', order ? (order.customerOrderNo || '-') : '-', 'po'],
+        ['📅', '交付日期', order ? (order.deliveryDate || '-') : '-', 'date'],
+        ['🔢', '任务数量', order ? fmtDetailVal(order.quantity) : '-', 'qty'],
+    ];
+    return `<div class="qce-auto-strip">` + items.map(([ico, k, v, cls]) => `
+        <div class="qce-auto-item ${v === '-' ? 'empty' : ''}">
+            <span class="qce-auto-k">${ico} ${k}</span>
+            <span class="qce-auto-v ${cls}" title="${prEsc(String(v))}">${prEsc(String(v))}</span>
+        </div>`).join('') + `</div>`;
+}
+
+// ===== 批量检验：缺陷记录明细 =====
+function qtDefRowsHtml() {
+    const f = window._qtForm;
+    const cfg = PAGE_CONFIG['qc-report-edit'];
+    const levelCls = { '一般': '', '严重': 'qce-level-serious', '致命': 'qce-level-fatal' };
+    const rows = (f.defectRows || []).map((r, i) => `<tr>
+        <td class="pr-seq">${i + 1}</td>
+        <td><select class="pr-input" onchange="qtDefChange(${i},'type',this.value)">${qtOpts(cfg.defectTypeOptions, r.type)}</select></td>
+        <td><select class="pr-input ${levelCls[r.level] || ''}" onchange="qtDefChange(${i},'level',this.value);qtDefRefresh()">${qtOpts(cfg.defectLevelOptions, r.level)}</select></td>
+        <td><input type="number" class="pr-input" min="0" placeholder="件数" value="${r.qty}" onchange="qtDefChange(${i},'qty',this.value)" /></td>
+        <td><select class="pr-input" onchange="qtDefChange(${i},'reason',this.value)">${qtOpts(cfg.defectReasonOptions, r.reason)}</select></td>
+        <td><select class="pr-input" onchange="qtDefChange(${i},'handle',this.value)">${qtOpts(cfg.handleOptions, r.handle)}</select></td>
+        <td>${r.photo
+            ? `<span class="qt-photo-item">${qcPhotoThumb(r.photo.kind, r.photo.label)}<span class="qt-photo-x" onclick="qtDefPhotoDel(${i})">×</span></span>`
+            : `<button type="button" class="pr-guide" onclick="qtDefPhotoAdd(${i})">＋ 缺陷照片</button>`}</td>
+        <td><button class="btn-text-link danger" onclick="qtDefDelRow(${i})">删除</button></td>
+    </tr>`).join('');
+    return rows || `<tr><td colspan="8" class="table-empty">暂无缺陷记录，如本批全部合格可不添加</td></tr>`;
+}
+
+function qtDefRefresh() {
+    const tbody = document.getElementById('qceDefBody');
+    if (tbody) tbody.innerHTML = qtDefRowsHtml();
+}
+
+function qtDefChange(i, key, val) {
+    const f = window._qtForm;
+    if (f && f.defectRows && f.defectRows[i]) f.defectRows[i][key] = val;
+}
+
+function qtDefSyncRows() {
+    const f = window._qtForm;
+    if (!f || !f.defectRows) return;
+    document.querySelectorAll('#qceDefBody tr').forEach((tr, i) => {
+        const r = f.defectRows[i];
+        if (!r) return;
+        const selects = tr.querySelectorAll('select');
+        const inputs = tr.querySelectorAll('input');
+        if (selects[0]) r.type = selects[0].value;
+        if (selects[1]) r.level = selects[1].value;
+        if (selects[2]) r.reason = selects[2].value;
+        if (selects[3]) r.handle = selects[3].value;
+        if (inputs[0]) r.qty = inputs[0].value;
+    });
+}
+
+function qtDefAddRow() {
+    const f = window._qtForm;
+    if (!f) return;
+    qtDefSyncRows();
+    f.defectRows.push({ type: '', level: '一般', reason: '', handle: '', qty: '', photo: null });
+    qtDefRefresh();
+}
+
+function qtDefDelRow(i) {
+    const f = window._qtForm;
+    if (!f) return;
+    qtDefSyncRows();
+    f.defectRows.splice(i, 1);
+    qtDefRefresh();
+}
+
+function qtDefPhotoAdd(i) {
+    const f = window._qtForm;
+    const r = f && f.defectRows[i];
+    if (!r) return;
+    r.photo = { kind: qtDefPhotoKind(r.type), label: (r.type || '缺陷') + '照片' };
+    qtDefRefresh();
+}
+
+function qtDefPhotoDel(i) {
+    const f = window._qtForm;
+    const r = f && f.defectRows[i];
+    if (!r) return;
+    r.photo = null;
+    qtDefRefresh();
+}
+
+// ===== 单独检验：逐件明细 =====
+function qtSingleRowsHtml() {
+    const f = window._qtForm;
+    const cfg = PAGE_CONFIG['qc-report-edit'];
+    const items = qtItemOptions();
+    const levelCls = { '一般': '', '严重': 'qce-level-serious', '致命': 'qce-level-fatal' };
+    const rows = (f.singleRows || []).map((r, i) => {
+        const bad = r.result !== '合格';
+        return `<tr class="${bad ? 'qce-row-bad' : ''}">
+            <td class="pr-seq">${i + 1}</td>
+            <td><input type="text" class="pr-input" placeholder="扫码/输入唯一码" value="${prEsc(r.sn)}" onchange="qtSingleChange(${i},'sn',this.value)" /></td>
+            <td><select class="pr-input" onchange="qtSingleChange(${i},'item',this.value)">${qtOpts(items, r.item)}</select></td>
+            <td><select class="pr-input ${bad ? 'qce-result-bad' : 'qce-result-ok'}" onchange="qtSingleChange(${i},'result',this.value);qtSingleRefresh();qtCalcRefresh()">${qtOpts(['合格', '不合格'], r.result, null)}</select></td>
+            <td><select class="pr-input ${levelCls[r.level] || ''}" ${bad ? '' : 'disabled'} onchange="qtSingleChange(${i},'level',this.value)">${qtOpts(cfg.defectLevelOptions, bad ? r.level : '')}</select></td>
+            <td><select class="pr-input" ${bad ? '' : 'disabled'} onchange="qtSingleChange(${i},'reason',this.value)">${qtOpts(cfg.defectReasonOptions, bad ? r.reason : '')}</select></td>
+            <td><select class="pr-input" ${bad ? '' : 'disabled'} onchange="qtSingleChange(${i},'handle',this.value)">${qtOpts(cfg.handleOptions, bad ? r.handle : '')}</select></td>
+            <td>${r.photo
+                ? `<span class="qt-photo-item">${qcPhotoThumb(r.photo.kind, r.photo.label)}<span class="qt-photo-x" onclick="qtSinglePhotoDel(${i})">×</span></span>`
+                : `<button type="button" class="pr-guide" onclick="qtSinglePhotoAdd(${i})">＋ 检验照片</button>`}</td>
+            <td><button class="btn-text-link danger" onclick="qtSingleDelRow(${i})">删除</button></td>
+        </tr>`;
+    }).join('');
+    return rows || `<tr><td colspan="9" class="table-empty">暂无检验明细，请点击"添加检验件"</td></tr>`;
+}
+
+function qtSingleTipHtml() {
+    const f = window._qtForm;
+    const rows = (f.singleRows || []).filter(r => r.sn || r.item);
+    const bad = rows.filter(r => r.result !== '合格').length;
+    const ok = rows.length - bad;
+    return `已录入 <b>${rows.length}</b> 件：合格 <span class="qce-tip-ok">${ok}</span> 件、不合格 <span class="qce-tip-bad">${bad}</span> 件；检验产品总数与合格率自动统计，判定为"不合格"的行（红色底色）需填写缺陷信息。`;
+}
+
+function qtSingleRefresh() {
+    const tbody = document.getElementById('qceSingleBody');
+    if (tbody) tbody.innerHTML = qtSingleRowsHtml();
+    const tip = document.getElementById('qceSingleTip');
+    if (tip) tip.innerHTML = qtSingleTipHtml();
+}
+
+function qtSingleChange(i, key, val) {
+    const f = window._qtForm;
+    if (!f || !f.singleRows || !f.singleRows[i]) return;
+    f.singleRows[i][key] = val;
+    if (key === 'result' && val === '合格') {
+        // 转为合格时清空缺陷字段
+        const r = f.singleRows[i];
+        r.level = ''; r.reason = ''; r.handle = '';
+    }
+}
+
+function qtSingleSyncRows() {
+    const f = window._qtForm;
+    if (!f || !f.singleRows) return;
+    document.querySelectorAll('#qceSingleBody tr').forEach((tr, i) => {
+        const r = f.singleRows[i];
+        if (!r) return;
+        const selects = tr.querySelectorAll('select');
+        const inputs = tr.querySelectorAll('input');
+        if (inputs[0]) r.sn = inputs[0].value;
+        if (selects[0]) r.item = selects[0].value;
+        if (selects[1]) r.result = selects[1].value;
+        if (selects[2] && !selects[2].disabled) r.level = selects[2].value;
+        if (selects[3] && !selects[3].disabled) r.reason = selects[3].value;
+        if (selects[4] && !selects[4].disabled) r.handle = selects[4].value;
+    });
+}
+
+function qtSingleAddRow() {
+    const f = window._qtForm;
+    if (!f) return;
+    qtSingleSyncRows();
+    f.singleRows.push({ sn: '', item: '', result: '合格', level: '', reason: '', handle: '', photo: null });
+    qtSingleRefresh();
+    qtCalcRefresh();
+}
+
+function qtSingleDelRow(i) {
+    const f = window._qtForm;
+    if (!f) return;
+    qtSingleSyncRows();
+    f.singleRows.splice(i, 1);
+    qtSingleRefresh();
+    qtCalcRefresh();
+}
+
+function qtSingleAllPass() {
+    const f = window._qtForm;
+    if (!f) return;
+    qtSingleSyncRows();
+    f.singleRows.forEach(r => { r.result = '合格'; r.level = ''; r.reason = ''; r.handle = ''; });
+    qtSingleRefresh();
+    qtCalcRefresh();
+    showMsg('已将全部检验件标记为合格');
+}
+
+function qtSinglePhotoAdd(i) {
+    const f = window._qtForm;
+    const r = f && f.singleRows[i];
+    if (!r) return;
+    r.photo = { kind: qtItemPhotoKind(r.item), label: (r.item || '检验') + '照片' };
+    qtSingleRefresh();
+}
+
+function qtSinglePhotoDel(i) {
+    const f = window._qtForm;
+    const r = f && f.singleRows[i];
+    if (!r) return;
+    r.photo = null;
+    qtSingleRefresh();
+}
+
+// ===== 过程图片（与弹窗版共用 window._qtPhotos） =====
+function qtPhotosHtml() {
+    return `<div class="eq-img-upload" onclick="qtPickPhoto(this)"><span class="eq-img-plus">＋</span><span class="eq-img-text">上传图片</span></div>` +
+        (window._qtPhotos || []).map((p, i) =>
+            `<span class="qt-photo-item">${qcPhotoThumb(p.kind, p.label)}<span class="qt-photo-x" onclick="qtRemovePhoto(${i})">×</span></span>`).join('');
+}
+
+// ===== 实时统计：检验总数/合格/异常/合格率/综合判定 =====
+function qtCalcRefresh() {
+    const f = window._qtForm;
+    if (!f) return;
+    const isBatch = f.mode !== 'single';
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    let total = null, pass = null;
+
+    if (isBatch) {
+        const tEl = document.getElementById('qt-total');
+        const pEl = document.getElementById('qt-pass');
+        const dEl = document.getElementById('qt-defect');
+        const rEl = document.getElementById('qt-rate');
+        if (!tEl || !pEl) return;
+        pEl.classList.remove('form-control-error');
+        total = tEl.value === '' ? null : Number(tEl.value);
+        pass = pEl.value === '' ? null : Number(pEl.value);
+        if (total !== null && pass !== null && pass <= total) {
+            const defect = Math.max(total - pass, 0);
+            const rate = total > 0 ? ((pass / total) * 100).toFixed(1) : '0.0';
+            if (dEl) { dEl.value = defect; dEl.classList.toggle('qce-input-bad', defect > 0); }
+            if (rEl) {
+                rEl.value = rate + '%';
+                rEl.classList.remove('qce-rate-ok', 'qce-rate-warn', 'qce-rate-bad');
+                rEl.classList.add(Number(rate) >= 95 ? 'qce-rate-ok' : Number(rate) >= 90 ? 'qce-rate-warn' : 'qce-rate-bad');
+            }
+        } else {
+            if (total !== null && pass !== null && pass > total) pEl.classList.add('form-control-error');
+            if (dEl) { dEl.value = '-'; dEl.classList.remove('qce-input-bad'); }
+            if (rEl) { rEl.value = '-'; rEl.classList.remove('qce-rate-ok', 'qce-rate-warn', 'qce-rate-bad'); }
+        }
+    } else {
+        qtSingleSyncRows();
+        const rows = (f.singleRows || []).filter(r => r.sn || r.item);
+        total = rows.length;
+        pass = rows.filter(r => r.result === '合格').length;
+    }
+
+    setTxt('qceTotal', total === null ? '-' : total);
+    setTxt('qcePass', pass === null ? '-' : pass);
+    const defect = (total !== null && pass !== null) ? Math.max(total - pass, 0) : null;
+    setTxt('qceDefect', defect === null ? '-' : defect);
+
+    const rateEl = document.getElementById('qceRate');
+    if (rateEl) {
+        if (total > 0 && pass !== null && pass <= total) {
+            const rate = ((pass / total) * 100).toFixed(1);
+            rateEl.textContent = rate + '%';
+            rateEl.className = 'qce-live-num ' + (rate >= 95 ? 'ok' : rate >= 90 ? 'warn' : 'bad');
+        } else {
+            rateEl.textContent = '-';
+            rateEl.className = 'qce-live-num';
+        }
+    }
+    const vEl = document.getElementById('qceVerdict');
+    if (vEl) {
+        if (total > 0 && pass !== null && pass <= total) {
+            const ok = pass / total >= 0.95;
+            vEl.textContent = ok ? '合格' : '不合格';
+            vEl.className = 'qce-verdict-tag ' + (ok ? 'pass' : 'fail');
+        } else {
+            vEl.textContent = '待检';
+            vEl.className = 'qce-verdict-tag wait';
+        }
+    }
+}
+
+// ===== 工作台页面渲染 =====
+function renderQcReportEditPage() {
+    const f = window._qtForm;
+    if (!f) return `<div class="card"><div class="card-body"><p>页面已失效，请从质检任务列表点击"添加"重新进入</p></div></div>`;
+    const config = PAGE_CONFIG[f.from] || PAGE_CONFIG['qc-incoming'];
+    const cfg = PAGE_CONFIG['qc-report-edit'];
+    const isBatch = f.mode !== 'single';
+    const orders = (PAGE_CONFIG['production-order'] || {}).data || [];
+    const order = f.orderNo ? orders.find(o => o.orderNo === f.orderNo) : null;
+
+    const orderOpts = ['<option value="">请选择工单</option>'].concat(orders.map(o =>
+        `<option value="${o.orderNo}" ${f.orderNo === o.orderNo ? 'selected' : ''}>${o.orderNo}（${o.productName}）</option>`)).join('');
+    const procOpts = qtOpts(qtProcessOptions(order), f.processName);
+    const inspectorOpts = qtOpts(cfg.inspectorOptions, f.inspector);
+
+    // ① 顶部栏
+    const topbarHtml = `<div class="detail-topbar">
+        <button class="back-icon" onclick="qtBack()" title="返回列表">‹</button>
+        <span class="detail-title">添加${config.title}</span>
+        <span class="tag tag-info">${config.qcTaskType}</span>
+        <span class="tag ${isBatch ? 'tag-info' : 'tag-success'}">${isBatch ? '批量检验' : '单独检验'}</span>
+        <span class="detail-actions">
+            <button class="btn" onclick="qtBack()">返回列表</button>
+            <button class="btn btn-primary" onclick="qtWorkSave()">保存检验单</button>
+        </span>
+    </div>`;
+
+    // ② 检验类型切换 + 实时统计
+    const modeHtml = `<div class="card qce-mode-card"><div class="card-body">
+        <div class="qce-mode-left">
+            <div class="qce-mode-caption">检验类型（二选一）</div>
+            <div class="qce-mode-switch">
+                <button type="button" class="qce-mode-btn ${isBatch ? 'active' : ''}" onclick="qtSwitchMode('batch')">
+                    <span class="qce-mode-ico">📦</span><span class="qce-mode-name">批量检验</span><span class="qce-mode-desc">整批汇总</span>
+                </button>
+                <button type="button" class="qce-mode-btn qce-mode-single ${!isBatch ? 'active' : ''}" onclick="qtSwitchMode('single')">
+                    <span class="qce-mode-ico">🔍</span><span class="qce-mode-name">单独检验</span><span class="qce-mode-desc">逐件录入</span>
+                </button>
+            </div>
+            <div class="qce-mode-tip">${isBatch
+                ? '批量检验：录入整批检验总数与合格数，异常数量、合格率自动计算，并为异常产品登记缺陷明细。'
+                : '单独检验：逐件录入产品唯一码与检验结果，检验总数、合格率自动统计，不合格件需登记缺陷信息。'}</div>
+        </div>
+        <div class="qce-live">
+            <div class="qce-live-item"><span class="qce-live-label">检验产品总数</span><span class="qce-live-num" id="qceTotal">-</span></div>
+            <div class="qce-live-item ok"><span class="qce-live-label">合格产品数</span><span class="qce-live-num" id="qcePass">-</span></div>
+            <div class="qce-live-item bad"><span class="qce-live-label">异常产品数</span><span class="qce-live-num" id="qceDefect">-</span></div>
+            <div class="qce-live-item rate"><span class="qce-live-label">合格率</span><span class="qce-live-num" id="qceRate">-</span></div>
+            <div class="qce-verdict"><span class="qce-verdict-label">综合判定</span><span class="qce-verdict-tag wait" id="qceVerdict">待检</span></div>
+        </div>
+    </div></div>`;
+
+    // ③ 基础信息（选工单后自动带出产品与客户）
+    const baseHtml = `<div class="card">
+        <div class="card-header"><span class="card-title">基础信息</span><span class="qce-card-sub">选择工单后自动带出产品与客户信息</span></div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-item"><label><span class="required">*</span>工单编号</label>
+                    <select class="form-select" id="qt-order" onchange="qtOrderChangePage(this)">${orderOpts}</select></div>
+                <div class="form-item"><label><span class="required">*</span>工序名称</label>
+                    <select class="form-select" id="qt-process">${procOpts}</select></div>
+                <div class="form-item"><label><span class="required">*</span>质检人员</label>
+                    <select class="form-select" id="qt-inspector">${inspectorOpts}</select></div>
+                <div class="form-item"><label><span class="required">*</span>检验时间</label>
+                    <input type="datetime-local" class="form-input" id="qt-time" value="${f.inspectTime || ''}" /></div>
+            </div>
+            <div class="qce-auto-title">工单关联信息（自动带出）</div>
+            <div id="qceAutoBox">${qtAutoInfoHtml(order)}</div>
+        </div>
+    </div>`;
+
+    // ④ 批量检验结果（第二张图样式）
+    const batchHtml = `<div class="card">
+        <div class="card-header"><span class="card-title">批量检验结果</span><span class="qce-card-sub">整批汇总录入，异常数量与合格率自动计算</span></div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-item"><label><span class="required">*</span>检验产品总数</label>
+                    <input type="number" class="form-input" id="qt-total" min="0" placeholder="请输入本批检验总数" value="${f.totalQty}" oninput="qtCalcRefresh()" /></div>
+                <div class="form-item"><label><span class="required">*</span>合格产品数</label>
+                    <input type="number" class="form-input" id="qt-pass" min="0" placeholder="请输入合格数量" value="${f.passQty}" oninput="qtCalcRefresh()" /></div>
+                <div class="form-item"><label>异常产品数<span class="qce-auto-tip">自动</span></label>
+                    <input type="text" class="form-input input-readonly" id="qt-defect" value="-" readonly /></div>
+                <div class="form-item"><label>合格率<span class="qce-auto-tip">自动</span></label>
+                    <input type="text" class="form-input input-readonly" id="qt-rate" value="-" readonly /></div>
+            </div>
+            <div class="form-row"><div class="form-item qce-form-full"><label>不合格产品码</label>
+                <textarea class="form-textarea" id="qt-codes" placeholder="多个产品码用、分隔，如：SN-0762、SN-0763、SN-0789">${prEsc(f.defectCodes)}</textarea></div></div>
+            <div class="pr-section-title"><span>缺陷记录明细（异常产品逐条登记，用于报告与追溯）</span>
+                <button class="btn btn-sm" onclick="qtDefAddRow()">＋ 添加缺陷记录</button></div>
+            <div class="pr-steps-wrap"><table class="pr-steps-table qce-def-table">
+                <thead><tr>
+                    <th style="width:44px;">#</th><th style="width:130px;">缺陷类型</th><th style="width:100px;">缺陷等级</th>
+                    <th style="width:90px;">缺陷数量</th><th style="width:150px;">缺陷原因</th><th style="width:120px;">处理方式</th>
+                    <th style="width:120px;">缺陷照片</th><th style="width:56px;">操作</th>
+                </tr></thead>
+                <tbody id="qceDefBody">${qtDefRowsHtml()}</tbody>
+            </table></div>
+        </div>
+    </div>`;
+
+    // ⑤ 单独检验明细（第三张图样式）
+    const singleHtml = `<div class="card">
+        <div class="card-header">
+            <span class="card-title">单独检验明细（逐件录入）</span>
+            <div class="qce-head-btns">
+                <button class="btn btn-sm" onclick="qtSingleAllPass()">✓ 全部合格</button>
+                <button class="btn btn-primary btn-sm" onclick="qtSingleAddRow()">＋ 添加检验件</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="pr-steps-wrap"><table class="pr-steps-table qce-single-table">
+                <thead><tr>
+                    <th style="width:44px;">#</th><th style="width:170px;">产品唯一码</th><th style="width:130px;">检验项目</th>
+                    <th style="width:100px;">检验结果</th><th style="width:96px;">缺陷等级</th><th style="width:140px;">缺陷原因</th>
+                    <th style="width:110px;">处理方式</th><th style="width:110px;">检验照片</th><th style="width:56px;">操作</th>
+                </tr></thead>
+                <tbody id="qceSingleBody">${qtSingleRowsHtml()}</tbody>
+            </table></div>
+            <div class="qce-single-tip" id="qceSingleTip">${qtSingleTipHtml()}</div>
+        </div>
+    </div>`;
+
+    // ⑥ 过程图片 + 备注
+    const extraHtml = `<div class="card">
+        <div class="card-header"><span class="card-title">过程图片与备注</span><span class="qce-card-sub">jpg/png，单张≤2MB，最多9张</span></div>
+        <div class="card-body">
+            <div class="form-row"><div class="form-item qce-form-full"><label>过程图片</label>
+                <div class="qt-upload-row">${qtPhotosHtml()}</div></div></div>
+            <div class="form-row"><div class="form-item qce-form-full"><label>备注</label>
+                <textarea class="form-textarea" id="qt-remark" placeholder="请输入检验备注">${prEsc(f.remark)}</textarea></div></div>
+        </div>
+    </div>`;
+
+    // ⑦ 底部操作条
+    const footerHtml = `<div class="qce-footer">
+        <button class="btn" onclick="qtBack()">返回列表</button>
+        <button class="btn btn-primary" onclick="qtWorkSave()">保存检验单</button>
+    </div>`;
+
+    return topbarHtml + modeHtml + baseHtml + (isBatch ? batchHtml : singleHtml) + extraHtml + footerHtml;
+}
+
+// ===== 保存检验单（写回质检任务列表，可查看质检报告） =====
+function qtWorkSave() {
+    const f = window._qtForm;
+    if (!f) { showMsg('页面已失效，请重新进入', 'error'); return; }
+    const get = id => document.getElementById(id);
+    const config = PAGE_CONFIG[f.from] || PAGE_CONFIG['qc-incoming'];
+    const isBatch = f.mode !== 'single';
+
+    const orderNo = get('qt-order').value;
+    const processName = get('qt-process').value;
+    const inspector = get('qt-inspector').value;
+    const inspectTime = get('qt-time').value;
+    const checks = [['qt-order', orderNo, '工单编号'], ['qt-process', processName, '工序名称'], ['qt-inspector', inspector, '质检人员'], ['qt-time', inspectTime, '检验时间']];
+    for (const [id, val, label] of checks) {
+        if (!val) {
+            const el = get(id);
+            el.classList.add('form-control-error');
+            el.focus();
+            showMsg(`请选择/填写${label}`, 'error');
+            return;
+        }
+    }
+
+    let actualQty = 0, passQty = 0, items = [], defects = [], singleItems = [], defectCodes = '';
+    if (isBatch) {
+        const totalStr = get('qt-total').value;
+        const passStr = get('qt-pass').value;
+        if (totalStr === '') { get('qt-total').classList.add('form-control-error'); get('qt-total').focus(); showMsg('请填写检验产品总数', 'error'); return; }
+        if (passStr === '') { get('qt-pass').classList.add('form-control-error'); get('qt-pass').focus(); showMsg('请填写合格产品数', 'error'); return; }
+        actualQty = Number(totalStr) || 0;
+        passQty = Number(passStr) || 0;
+        if (passQty > actualQty) {
+            get('qt-pass').classList.add('form-control-error');
+            get('qt-pass').focus();
+            showMsg('合格产品数不能大于检验产品总数', 'error');
+            return;
+        }
+        qtDefSyncRows();
+        defects = (f.defectRows || []).filter(r => r.type || r.reason || r.qty !== '');
+        defectCodes = get('qt-codes').value.trim();
+        items = defects.map(d => ({
+            item: d.type || '外观不合格',
+            result: `${d.reason || '-'}（${d.qty || 0}件，${d.handle || '待处理'}，等级：${d.level || '一般'}）`,
+            judge: d.level === '致命' ? '不合格' : (d.handle === '让步接收' ? '让步接收' : '不合格'),
+        }));
+        items.push({ item: '整批检验汇总', result: `共检验${actualQty}件，合格${passQty}件`, judge: passQty >= actualQty ? '合格' : '返工' });
+    } else {
+        qtSingleSyncRows();
+        singleItems = (f.singleRows || []).filter(r => r.sn || r.item);
+        if (!singleItems.length) { showMsg('请至少录入一条单独检验明细', 'error'); return; }
+        // 不合格件必须登记缺陷原因
+        const badIdx = singleItems.findIndex(r => r.result !== '合格' && !r.reason);
+        if (badIdx > -1) { showMsg(`第 ${badIdx + 1} 件判定为不合格，请选择缺陷原因`, 'error'); return; }
+        actualQty = singleItems.length;
+        passQty = singleItems.filter(r => r.result === '合格').length;
+        // 未填唯一码的自动补码（演示环境）
+        singleItems = singleItems.map((r, i) => {
+            const row = Object.assign({}, r);
+            if (!row.sn) row.sn = `SN-${String(Date.now()).slice(-6)}-${String(i + 1).padStart(3, '0')}`;
+            return row;
+        });
+        items = singleItems.map(r => ({
+            item: r.item || '-',
+            result: r.result === '合格' ? '检验合格' : `${r.reason}（${r.handle || '待处理'}，等级：${r.level || '一般'}）`,
+            judge: r.result,
+        }));
+        defectCodes = singleItems.filter(r => r.result !== '合格').map(r => r.sn).join('、');
+    }
+
+    const order = qtFindOrder(orderNo) || {};
+    const remark = get('qt-remark').value.trim();
+    const passRate = actualQty > 0 ? Number(((passQty / actualQty) * 100).toFixed(1)) : 0;
+    const data = {
+        orderNo, processName, inspector, remark,
+        taskType: config.qcTaskType,
+        inspectMode: isBatch ? '批量检验' : '单独检验',
+        inspectTime: inspectTime.replace('T', ' '),
+        actualQty, passQty, passRate,
+        productCode: order.productCode || '', productName: order.productName || '',
+        customerOrderNo: order.customerOrderNo || '', customerName: qtCustomerName(order) || '',
+        deliveryDate: order.deliveryDate || '', taskQty: order.quantity || actualQty,
+        defectCodes,
+        photos: JSON.parse(JSON.stringify(window._qtPhotos || [])),
+        conclusion: passRate >= 95 ? '合格' : '不合格',
+        createTime: nowDateTimeStr(),
+        reportNo: 'QR-' + String(Date.now()).slice(-6),
+        items,
+        defects: isBatch ? JSON.parse(JSON.stringify(defects)) : [],
+        singleItems: isBatch ? [] : JSON.parse(JSON.stringify(singleItems)),
+    };
+    config.data.unshift(data);
+    const from = f.from;
+    window._qtForm = null;
+    window._qtPhotos = [];
+    showMsg(`检验单已保存（${data.inspectMode}，合格率 ${passRate}%），点击"查看"可查看质检报告`);
+    navigateTo(from, PAGE_CONFIG[from].title);
 }
 
 // ===== 质检报告（独立页面，仿纸张样式） =====
@@ -6560,6 +7594,8 @@ function switchModuleTab(pageId, label) {
 // 同步 Tab 高亮：侧边栏菜单与顶部 Tab 任一切换后自动选中对应标签
 function updateModuleTabs(pageId) {
     document.querySelectorAll('.module-tab').forEach(el => el.classList.remove('active'));
+    // 质检报告工作台保持来源模块（质量管理）Tab 高亮
+    if (pageId === 'qc-report-edit' && window._qtForm && window._qtForm.from) pageId = window._qtForm.from;
     const tab = document.getElementById('mtab-' + pageId);
     if (tab) {
         tab.classList.add('active');
