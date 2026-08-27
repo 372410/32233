@@ -3117,14 +3117,6 @@ function handleEdit(idx) {
     }
 }
 
-function handleView(idx) {
-    if (currentPage === 'product-list') {
-        handleProductView(idx);
-        return;
-    }
-    alert('查看详情');
-}
-
 function handleDelete(idx) {
     // 设备/工序模块：真实删除数据行并重渲染
     if (ALL_MODULE_PAGES.includes(currentPage)) {
@@ -3231,10 +3223,6 @@ function showAddModal(formConfig, editIdx) {
         </div>
     `;
     document.getElementById('modalContainer').innerHTML = modalHtml;
-}
-
-function renderField(field) {
-    return renderFieldWithValue(field, '');
 }
 
 function renderFieldWithValue(field, val) {
@@ -3429,20 +3417,6 @@ function showBatchDeleteModal() {
     });
 }
 
-function confirmBatchDelete() {
-    closeModalDirect();
-    // 删除选中的行
-    const checkboxes = document.querySelectorAll('#tableBody input[type="checkbox"]:checked');
-    if (checkboxes.length === 0) {
-        alert('请先勾选要删除的数据');
-        return;
-    }
-    checkboxes.forEach(cb => {
-        const row = cb.closest('tr');
-        if (row) row.remove();
-    });
-}
-
 // ============================================================
 // 设备管理模块：设备列表 / 设备报修 / 维修类型（对齐真实系统）
 // ============================================================
@@ -3488,13 +3462,6 @@ function showDetailModal(title, config, row) {
         </div>
     </div>`;
     document.getElementById('modalContainer').innerHTML = html;
-}
-
-// ===== 设备列表：查看详情 =====
-function eqView(idx) {
-    const row = getEqRow('equipment-list', idx);
-    if (!row) return;
-    showDetailModal('设备详情', PAGE_CONFIG['equipment-list'], row);
 }
 
 // ===== 设备报修：操作按钮按状态动态显示（与真实系统一致） =====
@@ -3651,30 +3618,6 @@ function erCancel(idx) {
         onConfirm: function() {
             row.status = '已取消';
             showMsg('维修单已取消');
-            rerenderCurrentTable();
-        }
-    });
-}
-
-// ===== 维修类型：查看 / 删除 =====
-function rtView(idx) {
-    const row = getEqRow('repair-type', idx);
-    if (!row) return;
-    showDetailModal('维修类型详情', {
-        detailFields: [['typeName', '维修类型名称'], ['createTime', '创建时间']]
-    }, row);
-}
-
-function rtDelete(idx) {
-    showDeleteConfirm({
-        desc: '确认删除该维修类型吗？删除后不可恢复。',
-        onConfirm: function() {
-            const config = PAGE_CONFIG['repair-type'];
-            const row = getEqRow('repair-type', idx);
-            const realIdx = config.data.indexOf(row);
-            if (realIdx > -1) config.data.splice(realIdx, 1);
-            window._filteredData = null;
-            showMsg('删除成功');
             rerenderCurrentTable();
         }
     });
