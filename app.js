@@ -1,12 +1,13 @@
 /**
  * 涂装MES系统 - 应用逻辑
  * 路由系统 + 页面渲染 + 交互逻辑
- * 基于实际MES系统(http://125.122.18.184:9000/)重建
+
  */
 
 // 当前状态
 let currentPage = 'dashboard-overview';
-let expandedMenus = new Set(['dashboard']); // 默认展开的菜单
+let expandedMenus = new Set(['dashboard']); // 当前展开的模块（手风琴模式：同一时间最多展开一个）
+let manuallyCollapsedMenu = null; // 被用户手动收起的模块：在该模块内继续切页时不强制重新展开
 
 // ============ 初始化 ============
 function init() {
@@ -17,23 +18,35 @@ function init() {
 }
 
 // ============ 侧边栏导航 ============
+// 把编辑页/详情页映射回其来源菜单页（与侧边栏高亮来源保持一致）
+function resolveActivePage(pageId) {
+    let activePage = pageId;
+    // 任务执行页/质检报告页时保持来源菜单高亮
+    if (pageId === 'maintenance-task-exec') activePage = 'maintenance-task';
+    if (pageId === 'qc-report' && window._qcReportFrom) activePage = window._qcReportFrom;
+    // 质检报告工作台保持来源菜单（来料检/出货检/过程检/成品入库检）高亮
+    if (pageId === 'qc-report-edit' && window._qtForm && window._qtForm.from) activePage = window._qtForm.from;
+    if (INV_EDIT_FROM[pageId]) activePage = INV_EDIT_FROM[pageId];
+    // 能耗记录编辑页/数据采集编辑页保持来源菜单高亮
+    if (pageId === 'energy-edit') activePage = 'energy-record';
+    if (DC_EDIT_FROM[pageId]) activePage = DC_EDIT_FROM[pageId];
+    return activePage;
+}
+
+// 计算某页面所属的侧边栏模块 id（不属于任何模块时返回 null）
+function getMenuModuleId(pageId) {
+    const activePage = resolveActivePage(pageId);
+    const mod = MENU.find(m => m.children && m.children.some(c => c.page === activePage));
+    return mod ? mod.id : null;
+}
+
 function renderSidebar() {
     const nav = document.getElementById('sidebarNav');
-    // 任务执行页/质检报告页时保持来源菜单高亮
-    let activePage = currentPage;
-    if (currentPage === 'maintenance-task-exec') activePage = 'maintenance-task';
-    if (currentPage === 'qc-report' && window._qcReportFrom) activePage = window._qcReportFrom;
-    // 质检报告工作台保持来源菜单（来料检/出货检/过程检/成品入库检）高亮
-    if (currentPage === 'qc-report-edit' && window._qtForm && window._qtForm.from) activePage = window._qtForm.from;
-    if (INV_EDIT_FROM[currentPage]) activePage = INV_EDIT_FROM[currentPage];
-    // 能耗记录编辑页/数据采集编辑页保持来源菜单高亮
-    if (currentPage === 'energy-edit') activePage = 'energy-record';
-    if (DC_EDIT_FROM[currentPage]) activePage = DC_EDIT_FROM[currentPage];
+    // 编辑页/详情页保持来源菜单高亮（展开状态由 toggleMenu / navigateTo 维护，渲染只读不改）
+    const activePage = resolveActivePage(currentPage);
     nav.innerHTML = MENU.map(item => {
         if (item.children) {
             const isExpanded = expandedMenus.has(item.id);
-            const hasActiveChild = item.children.some(c => c.page === activePage);
-            if (hasActiveChild) expandedMenus.add(item.id);
             return `
                 <div class="menu-group">
                     <div class="menu-item ${isExpanded ? 'expanded' : ''}" onclick="toggleMenu('${item.id}')">
@@ -63,9 +76,13 @@ function renderSidebar() {
 
 function toggleMenu(menuId) {
     if (expandedMenus.has(menuId)) {
+        // 再次点击已展开模块：收起，并记录为手动收起（模块内切页时不强制弹回）
         expandedMenus.delete(menuId);
+        manuallyCollapsedMenu = menuId;
     } else {
-        expandedMenus.add(menuId);
+        // 手风琴互斥：展开该模块时自动收起其他所有模块，同一时间最多展开一个
+        expandedMenus = new Set([menuId]);
+        manuallyCollapsedMenu = null;
     }
     renderSidebar();
 }
@@ -127,7 +144,15 @@ function initPageCharts(pageId) {
 
 // ============ 路由导航 ============
 function navigateTo(pageId, label) {
+    // 侧边栏手风琴联动：跨模块切换页面时，自动收起原模块、只展开新页面所属模块；
+    // 在被手动收起的模块内继续切页时保持收起，不强制弹回
+    const prevModuleId = getMenuModuleId(currentPage);
+    const nextModuleId = getMenuModuleId(pageId);
     currentPage = pageId;
+    if (nextModuleId && nextModuleId !== prevModuleId) {
+        expandedMenus = new Set([nextModuleId]);
+        manuallyCollapsedMenu = null;
+    }
     const config = PAGE_CONFIG[pageId];
 
     // 切换页面时清除搜索状态
