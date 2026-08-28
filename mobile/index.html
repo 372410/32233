@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#334155">
+    <title>涂装MES · 移动端</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ================= 登录页（QQ 风格） ================= -->
+    <div id="loginView" class="login-view">
+        <div class="login-brand">
+            <div class="login-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 20h20"/><path d="M4 20V9l6 4V9l6 4V6l6-3v17"/>
+                </svg>
+            </div>
+            <h1 class="login-title">涂装MES</h1>
+            <p class="login-subtitle">涂装制造执行系统 · 移动端</p>
+        </div>
+
+        <form id="loginForm" class="login-form" novalidate>
+            <div class="login-inputs">
+                <div class="login-field">
+                    <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <input type="text" id="loginUser" value="zhangsan" placeholder="请输入账号" autocomplete="username" maxlength="20">
+                </div>
+                <div class="login-divider"></div>
+                <div class="login-field">
+                    <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <input type="password" id="loginPwd" value="123456" placeholder="请输入密码" autocomplete="current-password" maxlength="20">
+                    <button type="button" class="pwd-toggle" id="togglePwd" aria-label="显示或隐藏密码">
+                        <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <p class="login-error" id="loginError"></p>
+
+            <button type="submit" class="login-btn" id="loginBtn">登 录</button>
+
+            <div class="login-links">
+                <label class="remember">
+                    <input type="checkbox" id="rememberPwd" checked>
+                    <span>记住密码</span>
+                </label>
+                <a href="javascript:void(0)" class="link-muted">忘记密码？</a>
+            </div>
+        </form>
+
+        <p class="login-footer">涂装车间数字化管理平台 · v1.0</p>
+    </div>
+
+    <!-- ================= 主应用 ================= -->
+    <div id="appView" class="app-view hidden">
+
+        <!-- Tab 1：首页看板 -->
+        <section class="page active" id="page-home">
+            <header class="home-header">
+                <div class="home-header-top">
+                    <div>
+                        <h2 class="home-title">涂装MES</h2>
+                        <p class="home-date" id="homeDate"></p>
+                    </div>
+                    <div class="home-user">
+                        <span class="home-user-name" id="homeUserName">--</span>
+                        <span class="avatar" id="homeAvatar">--</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-body">
+                <div class="stats-grid" id="statsGrid">
+                    <!-- 指标卡片由 app.js 渲染 -->
+                </div>
+
+                <div class="section-head">
+                    <h3 class="section-title">待处理工单</h3>
+                    <span class="section-count" id="pendingCount">0 单</span>
+                </div>
+                <div class="order-mini-list" id="pendingList">
+                    <!-- 待处理工单由 app.js 渲染 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2：工单列表 -->
+        <section class="page" id="page-orders">
+            <header class="page-header">
+                <h2 class="page-header-title">工单列表</h2>
+                <span class="page-header-sub" id="orderTotal">共 0 单</span>
+            </header>
+
+            <div class="filter-bar" id="orderFilter">
+                <button class="filter-btn active" data-filter="全部">全部</button>
+                <button class="filter-btn" data-filter="生产中">生产中</button>
+                <button class="filter-btn" data-filter="待料">待料</button>
+                <button class="filter-btn" data-filter="已完成">已完成</button>
+            </div>
+
+            <div class="page-body">
+                <div class="order-list" id="orderList">
+                    <!-- 工单卡片由 app.js 渲染 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3：设备状态 -->
+        <section class="page" id="page-equipment">
+            <header class="page-header">
+                <h2 class="page-header-title">设备状态</h2>
+                <span class="page-header-sub" id="equipSummary">--</span>
+            </header>
+
+            <div class="page-body">
+                <div class="equip-list" id="equipmentList">
+                    <!-- 设备卡片由 app.js 渲染 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 4：我的 -->
+        <section class="page" id="page-profile">
+            <header class="profile-header">
+                <span class="avatar avatar-lg" id="profileAvatar">--</span>
+                <div class="profile-id">
+                    <h2 class="profile-name" id="profileName">--</h2>
+                    <p class="profile-dept" id="profileDept">--</p>
+                </div>
+            </header>
+
+            <div class="page-body">
+                <div class="info-card">
+                    <div class="info-row">
+                        <span class="info-label">岗位</span>
+                        <span class="info-value" id="infoRole">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">班组</span>
+                        <span class="info-value" id="infoTeam">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">当日报工数</span>
+                        <span class="info-value info-accent" id="infoReport">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">联系电话</span>
+                        <span class="info-value" id="infoPhone">--</span>
+                    </div>
+                </div>
+
+                <button class="logout-btn" id="logoutBtn">退出登录</button>
+            </div>
+        </section>
+
+        <!-- 底部导航 -->
+        <nav class="tabbar">
+            <button class="tab-item active" data-page="page-home">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>
+                </svg>
+                <span class="tab-label">首页看板</span>
+            </button>
+            <button class="tab-item" data-page="page-orders">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>
+                </svg>
+                <span class="tab-label">工单列表</span>
+            </button>
+            <button class="tab-item" data-page="page-equipment">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>
+                </svg>
+                <span class="tab-label">设备状态</span>
+            </button>
+            <button class="tab-item" data-page="page-profile">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span class="tab-label">我的</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- 业务数据：全部来自项目根目录 data.js，移动端代码不定义任何业务数据 -->
+    <script src="../data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
