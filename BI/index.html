@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="电泳涂装生产线数字化监控中心 · 工业监控大屏">
+<title>电泳涂装生产线数字化监控中心</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#03060e}
+body{font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;color:#dce8fa;user-select:none}
+.num{font-family:"Bahnschrift","Segoe UI","Arial",sans-serif;font-variant-numeric:tabular-nums}
+
+#bgGrid{position:fixed;inset:0;background:
+ radial-gradient(1300px 750px at 50% -12%,rgba(22,62,124,.38),transparent 62%),
+ radial-gradient(900px 600px at 88% 112%,rgba(10,42,92,.42),transparent 62%),
+ linear-gradient(180deg,#04070f,#030609)}
+#bgGrid::before{content:'';position:absolute;inset:0;background-image:
+ linear-gradient(rgba(64,140,220,.045) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(64,140,220,.045) 1px,transparent 1px);background-size:48px 48px}
+#bgGrid::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 52%,rgba(2,4,10,.85))}
+.ptc{position:absolute;bottom:-8px;width:3px;height:3px;border-radius:50%;background:#39c3ff;animation:ptcUp linear infinite}
+@keyframes ptcUp{to{transform:translateY(-110vh)}}
+@keyframes breath{0%,100%{opacity:1}50%{opacity:.35}}
+
+#stage{position:absolute;width:1920px;height:1080px;transform-origin:left top;padding:12px 16px;
+ display:grid;grid-template-rows:84px 102px 1fr 252px;gap:12px}
+#stage::before,#stage::after{content:'';position:fixed;width:30px;height:30px;pointer-events:none}
+#stage::before{top:5px;left:5px;border-top:2px solid rgba(57,195,255,.55);border-left:2px solid rgba(57,195,255,.55)}
+#stage::after{bottom:5px;right:5px;border-bottom:2px solid rgba(57,195,255,.55);border-right:2px solid rgba(57,195,255,.55)}
+
+/* ============ 顶栏 ============ */
+.hd{position:relative;display:flex;align-items:center;
+ background:linear-gradient(180deg,rgba(16,40,80,.5),rgba(8,20,40,.08));
+ border:1px solid rgba(70,150,230,.2);border-radius:6px}
+.hd::after{content:'';position:absolute;left:10%;right:10%;bottom:-1px;height:2px;
+ background:linear-gradient(90deg,transparent,rgba(57,195,255,.75),transparent);
+ animation:breath 3.2s ease-in-out infinite}
+.hd-left{width:360px;display:flex;flex-direction:column;gap:7px;padding-left:18px}
+.sys-pill{display:flex;align-items:center;gap:8px;font-size:14px;color:#38e08f;letter-spacing:2px}
+.sys-pill i{width:9px;height:9px;border-radius:50%;background:#38e08f;box-shadow:0 0 10px #38e08f;animation:breath 2s ease-in-out infinite}
+.sys-sub{font-size:11px;color:#5c7aa8;letter-spacing:2px}
+.hd-c{flex:1;display:flex;align-items:center;justify-content:center;gap:26px}
+.hd-title{text-align:center}
+.hd-title h1{font-size:34px;font-weight:700;letter-spacing:7px;
+ background:linear-gradient(180deg,#ffffff 15%,#8fd0ff 60%,#3a8fd9);
+ -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 0 20px rgba(60,150,255,.45))}
+.hd-title p{margin-top:5px;font-size:11px;letter-spacing:9px;color:#5c7aa8}
+.hd-wing{width:170px;height:2px;background:linear-gradient(90deg,transparent,rgba(57,195,255,.7));position:relative;flex:none}
+.hd-wing.r{transform:scaleX(-1)}
+.hd-wing::after{content:'';position:absolute;right:-3px;top:-3px;width:8px;height:8px;background:#39c3ff;transform:rotate(45deg);box-shadow:0 0 10px #39c3ff}
+.hd-right{width:360px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-right:18px}
+.hd-date{font-size:13px;color:#7f9cc7;letter-spacing:2px}
+.hd-date .wk{margin-left:10px;color:#39c3ff}
+.hd-time{font-size:30px;font-weight:700;color:#39c3ff;line-height:1;letter-spacing:2px;text-shadow:0 0 16px rgba(57,195,255,.55)}
+.hd-run{font-size:11px;color:#5c7aa8;letter-spacing:1px}
+.hd-run b{color:#ffd27d;font-weight:600;margin-left:4px}
+
+/* ============ 通用面板 ============ */
+.panel{position:relative;display:flex;flex-direction:column;min-height:0;min-width:0;padding:12px 14px;
+ background:linear-gradient(180deg,rgba(14,33,64,.66),rgba(7,17,34,.46));
+ border:1px solid rgba(70,150,230,.22);border-radius:6px}
+.panel::before,.panel::after{content:'';position:absolute;width:12px;height:12px;pointer-events:none}
+.panel::before{top:-1px;left:-1px;border-top:2px solid rgba(57,195,255,.8);border-left:2px solid rgba(57,195,255,.8)}
+.panel::after{bottom:-1px;right:-1px;border-bottom:2px solid rgba(57,195,255,.8);border-right:2px solid rgba(57,195,255,.8)}
+.pt{flex:none;display:flex;align-items:center;gap:9px;height:32px}
+.pt::before{content:'';width:4px;height:16px;border-radius:2px;background:linear-gradient(180deg,#39c3ff,#2f7de0);box-shadow:0 0 8px rgba(57,195,255,.6)}
+.pt b{font-size:16px;color:#eaf3ff;letter-spacing:2px;font-weight:600}
+.pt span{font-size:10px;color:#5c7aa8;letter-spacing:3px}
+.pt em{margin-left:auto;font-style:normal;font-size:11px;color:#5c7aa8;letter-spacing:1px}
+
+/* ============ KPI ============ */
+.kpis{display:grid;grid-template-columns:repeat(8,1fr);gap:12px}
+.kpi{position:relative;padding:10px 14px 8px 18px;border:1px solid rgba(70,150,230,.22);border-radius:6px;overflow:hidden;
+ background:linear-gradient(180deg,rgba(14,33,64,.66),rgba(7,17,34,.46))}
+.kpi::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--kc,#39c3ff),transparent)}
+.kpi-l{font-size:12px;color:#7f9cc7;letter-spacing:1px;white-space:nowrap}
+.kpi-v{margin-top:5px;display:flex;align-items:baseline;gap:4px}
+.kpi-v b{font-family:"Bahnschrift","Segoe UI",sans-serif;font-variant-numeric:tabular-nums;font-size:29px;font-weight:700;color:var(--kc,#eaf3ff);line-height:1.05;
+ text-shadow:0 0 18px color-mix(in srgb,var(--kc,#39c3ff) 45%,transparent);transition:color .45s,text-shadow .45s}
+.kpi-v b.tick{color:#fff;text-shadow:0 0 22px rgba(255,255,255,.7)}
+.kpi-v i{font-style:normal;font-size:12px;color:#5c7aa8}
+.kpi-f{margin-top:7px;display:flex;align-items:center;gap:8px;font-size:11px;color:#5c7aa8;white-space:nowrap}
+.kpi-f .up{color:#38e08f}.kpi-f .dn{color:#ff7d8a}
+.kbar{flex:1;height:4px;background:rgba(70,150,230,.15);border-radius:2px;overflow:hidden}
+.kbar b{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,#2f7de0,#39c3ff);box-shadow:0 0 6px rgba(57,195,255,.6);transition:width .8s}
+
+/* ============ 主区 ============ */
+.main{display:grid;grid-template-columns:1400px 1fr;gap:12px;min-height:0}
+
+/* ---- 工艺路线 ---- */
+.phase-bar{flex:none;display:flex;align-items:center;gap:12px;margin:2px 0 6px}
+.phase-ribbon{position:relative;flex:1;display:flex;height:30px}
+.pr-seg{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;margin-right:4px;border-radius:4px;
+ border:1px solid color-mix(in srgb,var(--pc) 38%,transparent);
+ background:color-mix(in srgb,var(--pc) 12%,transparent)}
+.pr-seg:last-child{margin-right:0}
+.pr-seg span{font-size:12px;color:var(--pc);letter-spacing:1px;font-weight:600}
+.pr-seg i{font-style:normal;font-size:10px;color:#6c8ab5;letter-spacing:1px}
+.pr-tick{position:absolute;top:-3px;bottom:-3px;width:3px;border-radius:2px;background:#fff;
+ box-shadow:0 0 10px #39c3ff,0 0 18px rgba(57,195,255,.7)}
+.route-tip{flex:none;font-size:11px;color:#5c7aa8;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.route-tip i{width:8px;height:8px;border-radius:50%;background:#7fd8ff;box-shadow:0 0 8px #39c3ff;flex:none}
+
+.route-box{position:relative;flex:none;height:450px;border-radius:8px;overflow:hidden;
+ border:1px dashed rgba(70,150,230,.16);
+ background:radial-gradient(720px 320px at 50% 42%,rgba(20,55,110,.2),transparent 72%)}
+.route-box::before{content:'';position:absolute;inset:0;background-image:
+ linear-gradient(rgba(64,140,220,.05) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(64,140,220,.05) 1px,transparent 1px);background-size:44px 44px}
+.route-svg{position:absolute;left:0;top:0;z-index:1;width:1372px;height:450px}
+.pipe-base{stroke:#143257;stroke-width:9;fill:none;stroke-linecap:round}
+.pipe-inner{stroke:rgba(70,150,235,.22);stroke-width:5;fill:none;stroke-linecap:round}
+.pipe-flow{stroke:#3fc8ff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-dasharray:9 15;opacity:.9;
+ filter:drop-shadow(0 0 3px rgba(63,200,255,.9));animation:pipeflow 2.2s linear infinite}
+@keyframes pipeflow{to{stroke-dashoffset:-264}}
+.pipe-arrow{fill:#3fc8ff;opacity:.95;filter:drop-shadow(0 0 5px rgba(63,200,255,.9))}
+.pipe-txt{fill:#5c7aa8;font-size:11px;letter-spacing:2px}
+.fdot{fill:#aee4ff;filter:drop-shadow(0 0 4px #39c3ff)}
+.wp-ring{stroke:var(--wpc,#3fc8ff);stroke-width:1.6;fill:none;stroke-dasharray:4 3;transition:stroke .4s}
+.wp-core{fill:var(--wpc,#7fd8ff);filter:drop-shadow(0 0 6px var(--wpc,#39c3ff));transition:fill .4s}
+.wp-pulse{stroke:rgba(63,200,255,.65);stroke-width:1;fill:none;transform-box:fill-box;transform-origin:center;animation:wppulse 1.6s ease-out infinite}
+@keyframes wppulse{0%{transform:scale(.5);opacity:1}100%{transform:scale(1.9);opacity:0}}
+.wp-txt{fill:var(--wpc,#bfe9ff);font-size:10px;letter-spacing:2px;transition:fill .4s}
+
+.stn{position:absolute;z-index:2;display:flex;flex-direction:column;width:196px;border-radius:8px;padding:7px 10px 6px;
+ background:linear-gradient(180deg,rgba(16,36,70,.93),rgba(9,20,40,.9));
+ border:1px solid rgba(70,150,230,.25);border-top:3px solid var(--pc);
+ box-shadow:0 4px 16px rgba(0,10,30,.5);
+ transition:transform .35s,box-shadow .35s,border-color .35s}
+.stn.active{border-color:var(--pc);z-index:6;transform:scale(1.075);
+ box-shadow:0 0 24px color-mix(in srgb,var(--pc) 50%,transparent),0 0 46px color-mix(in srgb,var(--pc) 22%,transparent)}
+.stn.active .stn-name{color:#fff;text-shadow:0 0 12px var(--pc)}
+.stn-live{position:absolute;top:-12px;right:10px;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:2px;font-weight:600;
+ background:linear-gradient(90deg,var(--pc),color-mix(in srgb,var(--pc) 60%,#39c3ff));color:#041426;
+ opacity:0;transform:scale(.7);transition:.35s;box-shadow:0 0 12px color-mix(in srgb,var(--pc) 60%,transparent)}
+.stn.active .stn-live{opacity:1;transform:scale(1)}
+.stn-top{display:flex;align-items:center;gap:7px}
+.stn-num{flex:none;width:25px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:4px;
+ font-family:"Bahnschrift",sans-serif;font-size:12px;font-weight:700;color:var(--pc);
+ background:color-mix(in srgb,var(--pc) 15%,transparent);
+ border:1px solid color-mix(in srgb,var(--pc) 45%,transparent)}
+.stn-name{font-size:15px;font-weight:700;color:#eaf3ff;letter-spacing:1px;white-space:nowrap;transition:.3s}
+.stn-dot{margin-left:auto;flex:none;width:8px;height:8px;border-radius:50%;background:#38e08f;box-shadow:0 0 7px #38e08f;animation:breath 2.4s ease-in-out infinite}
+.stn-mode{margin:4px 0 5px;display:flex;align-items:center;gap:6px;font-size:11px;color:#7f9cc7;letter-spacing:1px}
+.stn-mode::before{content:'';flex:none;width:5px;height:5px;background:var(--pc);transform:rotate(45deg);box-shadow:0 0 4px var(--pc)}
+.stn-grid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;align-content:space-evenly}
+.pv{display:flex;align-items:baseline;gap:4px;font-size:11px;min-width:0;white-space:nowrap}
+.pv.full{grid-column:1/-1}
+.pv span{color:#7f9cc7;flex:none}
+.pv b{font-family:"Bahnschrift",sans-serif;font-variant-numeric:tabular-nums;font-size:14px;font-weight:600;color:#d7ecff;transition:color .5s}
+.pv b.chg{color:#7fe3ff;text-shadow:0 0 10px rgba(127,227,255,.6)}
+.pv b.st-on{font-family:inherit;font-size:11.5px;color:#38e08f;font-weight:600}
+.pv b.st-on::before{content:'● ';font-size:9px}
+.pv b.st-tx{font-family:inherit;font-size:11px;color:#bfe0ff;font-weight:500}
+.pv i{font-style:normal;font-size:9px;color:#5c7aa8}
+.stn-extra{margin-top:6px;display:flex;gap:14px;font-size:10.5px;color:#7f9cc7}
+.stn-extra em{font-style:normal;display:flex;align-items:center;gap:5px;color:#9fc3e8;letter-spacing:1px}
+.stn-extra em::before{content:'';width:6px;height:6px;border-radius:50%;background:#38e08f;box-shadow:0 0 6px #38e08f;animation:breath 2.6s ease-in-out infinite}
+
+.route-foot{flex:none;display:flex;align-items:center;gap:14px;height:28px;margin-top:6px;font-size:12px;color:#7f9cc7}
+.rf-cur{display:flex;align-items:baseline;gap:4px;white-space:nowrap}
+.rf-cur .rf-lab{font-size:11px;color:#5c7aa8}
+.rf-cur b{font-family:"Bahnschrift",sans-serif;color:#39c3ff;font-size:17px;font-weight:700}
+.rf-cur .rf-name{color:#eaf3ff;font-size:13px;font-weight:600;letter-spacing:1px}
+.rf-phase{flex:none;padding:2px 11px;border-radius:10px;font-size:11px;letter-spacing:1px;font-weight:600;
+ color:var(--pc);background:color-mix(in srgb,var(--pc) 14%,transparent);
+ border:1px solid color-mix(in srgb,var(--pc) 40%,transparent)}
+.rf-steps{flex:1;display:flex;gap:3px}
+.rf-steps i{flex:1;height:8px;border-radius:2px;background:rgba(70,150,230,.14);transition:.3s}
+.rf-steps i.on{background:var(--pc);box-shadow:0 0 7px color-mix(in srgb,var(--pc) 80%,transparent)}
+.rf-cycle{flex:none;font-size:11px;color:#5c7aa8;letter-spacing:1px}
+
+/* ---- 右侧栏 ---- */
+.side{display:grid;grid-template-rows:288px 116px 1fr;gap:12px;min-height:0}
+.alarm-list{margin-top:6px;display:flex;flex-direction:column;gap:8px}
+.al{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;font-size:12px;color:#c3d8ef;
+ border:1px solid rgba(70,150,230,.14);background:rgba(12,28,54,.5);transition:.35s}
+.al-st{flex:none;width:24px;height:19px;display:flex;align-items:center;justify-content:center;border-radius:3px;
+ font-family:"Bahnschrift",sans-serif;font-size:11px;font-weight:700;color:#7fc7ff;background:rgba(70,150,230,.16);border:1px solid rgba(70,150,230,.3)}
+.al-dot{flex:none;width:7px;height:7px;border-radius:50%}
+.al.lv1 .al-dot{background:#ffcc4d;box-shadow:0 0 7px #ffcc4d}
+.al.lv2 .al-dot{background:#ff5468;box-shadow:0 0 8px #ff5468;animation:breath 1.2s ease-in-out infinite}
+.al-txt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.al-txt em{font-style:normal;margin-left:7px;font-size:10px;color:#38e08f;border:1px solid rgba(56,224,143,.4);border-radius:8px;padding:0 6px}
+.al-time{flex:none;font-family:"Bahnschrift",sans-serif;color:#7f9cc7;font-size:12px}
+.al.cur{border-color:rgba(255,204,77,.5);background:rgba(255,190,60,.07)}
+.al-foot{margin-top:auto;display:flex;justify-content:space-between;padding-top:9px;
+ border-top:1px dashed rgba(70,150,230,.22);font-size:11px;color:#5c7aa8}
+.al-foot b{font-family:"Bahnschrift",sans-serif;color:#ffcc4d;margin:0 2px}
+.al-empty{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;
+ font-size:14px;letter-spacing:4px;color:#38e08f}
+.al-empty i{flex:none;width:10px;height:10px;border-radius:50%;background:#38e08f;
+ box-shadow:0 0 10px #38e08f;animation:breath 2s ease-in-out infinite}
+.ov-grid{margin-top:5px;flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);gap:5px 10px}
+.ov{display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-radius:5px;font-size:11.5px;color:#7f9cc7;
+ background:rgba(12,28,54,.5);border:1px solid rgba(70,150,230,.12)}
+.ov b{font-family:"Bahnschrift","Microsoft YaHei",sans-serif;color:#d7ecff;font-size:13px;font-weight:600;letter-spacing:.5px}
+.ov b.hl{color:#39c3ff}
+#trendChart{flex:1;min-height:0;margin-top:2px}
+
+/* ============ 底部 ============ */
+.bottom{display:grid;grid-template-columns:762px 1fr 566px;gap:12px;min-height:0}
+.ord-scroll{flex:1;margin-top:4px;overflow:hidden;position:relative;
+ -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%);
+ mask-image:linear-gradient(180deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%)}
+.ord-in{animation:tblup 46s linear infinite}
+.ord-scroll:hover .ord-in{animation-play-state:paused}
+@keyframes tblup{to{transform:translateY(-50%)}}
+table.ord{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.ord th{color:#7f9cc7;font-weight:500;text-align:left;padding:5px 8px;letter-spacing:1px;
+ background:rgba(14,33,64,.85);border-bottom:1px solid rgba(70,150,230,.28)}
+.ord td{padding:5px 8px;color:#c9dcef;border-bottom:1px solid rgba(70,150,230,.08);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ord tr:hover td{background:rgba(57,195,255,.06)}
+.ord .mo{font-family:Consolas,"Bahnschrift",monospace;color:#7fc7ff}
+.ord .ct{font-family:"Bahnschrift",sans-serif;color:#d7ecff}
+.ord .rt{text-align:right}
+.plan-list{margin-top:7px;flex:1;display:flex;flex-direction:column;gap:7px}
+.pl-row{flex:1;display:flex;align-items:center;gap:9px;font-size:12px}
+.pl-num{flex:none;width:21px;height:19px;display:flex;align-items:center;justify-content:center;border-radius:3px;
+ font-family:"Bahnschrift",sans-serif;font-size:11px;color:#7fc7ff;background:rgba(70,150,230,.16)}
+.pl-mo{flex:none;width:106px;font-family:Consolas,monospace;font-size:11px;color:#7fc7ff}
+.pl-name{flex:none;width:66px;color:#c9dcef;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.pl-bar{flex:1;height:8px;border-radius:4px;background:rgba(70,150,230,.12);overflow:hidden}
+.pl-bar b{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#2f7de0,#39c3ff);
+ box-shadow:0 0 8px rgba(57,195,255,.55);transition:width .9s}
+.pl-qty{flex:none;width:54px;text-align:right;font-family:"Bahnschrift",sans-serif;color:#c9dcef}
+.pl-pct{flex:none;width:46px;text-align:right;font-family:"Bahnschrift",sans-serif;color:#39c3ff;font-weight:600}
+.eng-head{flex:none;display:flex;gap:20px;margin:3px 0 1px;font-size:11.5px;color:#7f9cc7}
+.eng-head .ei{width:7px;height:7px;border-radius:2px;display:inline-block;margin-right:6px}
+.eng-head b{font-family:"Bahnschrift",sans-serif;color:#d7ecff;font-size:13px;margin-left:3px}
+#engChart{flex:1;min-height:0;margin-top:2px}
+.chart-fb{flex:1;display:flex;align-items:center;justify-content:center;color:#5c7aa8;font-size:12px;letter-spacing:1px}
+
+@media (prefers-reduced-motion:reduce){
+ .pipe-flow,.ptc,.stn-dot,.stn-extra em::before,.wp-pulse,.ord-in,.sys-pill i,.al.lv2 .al-dot{animation:none}
+}
+</style>
+</head>
+<body>
+<div id="bgGrid"></div>
+
+<div id="stage">
+  <header class="hd">
+    <div class="hd-left">
+      <div class="sys-pill"><i></i>系统运行中</div>
+      <div class="sys-sub">MES 数据联动 · 刷新周期 2s</div>
+    </div>
+    <div class="hd-c">
+      <div class="hd-wing"></div>
+      <div class="hd-title">
+        <h1>电泳涂装生产线数字化监控中心</h1>
+        <p>ED COATING LINE · DIGITAL MONITORING CENTER</p>
+      </div>
+      <div class="hd-wing r"></div>
+    </div>
+    <div class="hd-right">
+      <div class="hd-date"><span id="dateTxt">2026-08-28</span><span class="wk" id="wkTxt">星期五</span></div>
+      <div class="hd-time num" id="timeTxt">14:30:59</div>
+      <div class="hd-run">运行时长<b id="runTxt">08:30:45</b></div>
+    </div>
+  </header>
+
+  <section class="kpis">
+    <div class="kpi" style="--kc:#39c3ff">
+      <div class="kpi-l">今日产量（件）</div>
+      <div class="kpi-v"><b id="kOut">12,736</b></div>
+      <div class="kpi-f"><span class="up">▲ 2.4%</span><span>较昨日同期</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">计划达成率</div>
+      <div class="kpi-v"><b id="kRate">87.8</b><i>%</i></div>
+      <div class="kpi-f"><div class="kbar"><b id="kRateBar" style="width:87.8%"></b></div><span>计划 14,500</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">设备稼动率</div>
+      <div class="kpi-v"><b id="kOee">92.3</b><i>%</i></div>
+      <div class="kpi-f"><div class="kbar"><b id="kOeeBar" style="width:92.3%"></b></div><span>目标 ≥ 90%</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">一次合格率</div>
+      <div class="kpi-v"><b id="kFpy">98.6</b><i>%</i></div>
+      <div class="kpi-f"><div class="kbar"><b id="kFpyBar" style="width:98.6%"></b></div><span>膜厚抽检 120 点</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">在制品（件）</div>
+      <div class="kpi-v"><b id="kWip">3,240</b></div>
+      <div class="kpi-f"><span>全线 18 工序流转</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">生产节拍</div>
+      <div class="kpi-v"><b id="kTakt">2.4</b><i>件/min</i></div>
+      <div class="kpi-f"><span>挂具节拍 25s</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">单位能耗</div>
+      <div class="kpi-v"><b id="kCost">0.42</b><i>kWh/件</i></div>
+      <div class="kpi-f"><span class="dn">▼ 1.8%</span><span>环比优化</span></div>
+    </div>
+    <div class="kpi" style="--kc:#ffa94d">
+      <div class="kpi-l">今日报警</div>
+      <div class="kpi-v"><b id="kAlarm">5</b><i>起</i></div>
+      <div class="kpi-f"><span>已闭环 2 · 响应 4.2min</span></div>
+    </div>
+  </section>
+
+  <section class="main">
+    <div class="panel">
+      <div class="pt"><b>工艺路线全景监控</b><span>PROCESS ROUTE PANORAMA</span><em>18 道工序 · 4 工艺段 · 连续流转</em></div>
+      <div class="phase-bar">
+        <div class="phase-ribbon" id="ribbon"></div>
+        <div class="route-tip"><i></i>5 工件巡行 · 管道连续液流 · 参数 1.5s 刷新</div>
+      </div>
+      <div class="route-box" id="routeBox"></div>
+      <div class="route-foot">
+        <div class="rf-cur">
+          <span class="rf-lab">W1 当前工序</span><b id="rfNum">01</b><span class="rf-name" id="rfName">上件</span>
+        </div>
+        <span class="rf-phase" id="rfPhase">前处理·脱脂段</span>
+        <div class="rf-steps" id="rfSteps"></div>
+        <span class="rf-cycle">在途工件 5 件 · 全线循环 34s · 蛇形连续流转</span>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="panel">
+        <div class="pt"><b>设备异常报警</b><span>ALARM</span><em>实时滚动</em></div>
+        <div class="alarm-list" id="alarmList"></div>
+        <div class="al-foot"><span>今日 <b>5</b> 起 · 已闭环 <b>2</b> 起</span><span>平均响应 <b>4.2</b> min</span></div>
+      </div>
+      <div class="panel">
+        <div class="pt"><b>运行概览</b><span>OVERVIEW</span></div>
+        <div class="ov-grid">
+          <div class="ov">运行时长<b class="hl" id="ovRun">08:30:45</b></div>
+          <div class="ov">当前工单<b>MO202608150005</b></div>
+          <div class="ov">生产节拍<b class="hl" id="ovTakt">2.4 件/min</b></div>
+          <div class="ov">综合效率 OEE<b>89.2%</b></div>
+          <div class="ov">班次<b>白班 A · 电泳甲班</b></div>
+          <div class="ov">计划完工<b class="hl">20:00</b></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="pt"><b>近 7 日产量</b><span>OUTPUT TREND</span><em>单位：件</em></div>
+        <div id="trendChart"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom">
+    <div class="panel">
+      <div class="pt"><b>完成工单</b><span>COMPLETED ORDERS</span><em>共 20 单 · 自动滚动</em></div>
+      <div class="ord-scroll" id="ordScroll">
+        <div class="ord-in" id="ordIn"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="pt"><b>排产计划</b><span>PRODUCTION PLAN</span><em>达成进度</em></div>
+      <div class="plan-list" id="planList"></div>
+    </div>
+    <div class="panel">
+      <div class="pt"><b>能耗统计</b><span>ENERGY</span><em>近半年费用（万元）</em></div>
+      <div class="eng-head">
+        <span><i class="ei" style="background:#3aa0ff"></i>今日电<b>4,286</b>kWh</span>
+        <span><i class="ei" style="background:#2ee0c8"></i>水<b>128</b>t</span>
+        <span><i class="ei" style="background:#ffa94d"></i>燃气<b>356</b>m³</span>
+      </div>
+      <div id="engChart"></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const pad2=n=>String(n).padStart(2,'0');
+const fmt=n=>n.toLocaleString('en-US');
+
+/* ---------- 缩放适配 ---------- */
+const stage=$('#stage');
+function fit(){
+  const s=Math.min(innerWidth/1920,innerHeight/1080);
+  stage.style.transform=`scale(${s})`;
+  stage.style.left=(innerWidth-1920*s)/2+'px';
+  stage.style.top=(innerHeight-1080*s)/2+'px';
+}
+addEventListener('resize',fit);fit();
+
+/* ---------- 背景粒子 ---------- */
+for(let i=0;i<16;i++){
+  const d=document.createElement('i');
+  d.className='ptc';
+  d.style.left=Math.random()*100+'%';
+  d.style.opacity=(.1+Math.random()*.25).toFixed(2);
+  d.style.animationDuration=(14+Math.random()*14).toFixed(1)+'s';
+  d.style.animationDelay=(-Math.random()*24).toFixed(1)+'s';
+  $('#bgGrid').appendChild(d);
+}
+
+/* ---------- 数据 ---------- */
+const PHASES=[
+  {name:'前处理·脱脂',color:'#3aa0ff',from:1,to:6},
+  {name:'磷化·表调',color:'#8f7bf5',from:7,to:11},
+  {name:'电泳涂装',color:'#2ee0c8',from:12,to:15},
+  {name:'烘干固化',color:'#ffa94d',from:16,to:18}
+];
+const phaseOf=id=>PHASES.find(p=>id>=p.from&&id<=p.to);
+
+const STATIONS=[
+  {id:1, name:'上件',        mode:'自动上件', params:[
+    {k:'生产节拍',v:2.4,u:'件/min',f:1,j:.08,wide:1},{k:'夹具循环',v:36,u:'套',f:0,j:0},{k:'在线挂具',v:12,u:'挂',f:0,j:1}]},
+  {id:2, name:'热水洗',      mode:'喷淋', params:[
+    {k:'压力',v:0.18,u:'Mpa',f:2,j:.006},{k:'温度',v:48,u:'℃',f:1,j:.3},{k:'流量',v:12.5,u:'m³/h',f:1,j:.15},{k:'阀开度',v:65,u:'%',f:0,j:2}]},
+  {id:3, name:'预脱脂',      mode:'喷淋', params:[
+    {k:'压力',v:0.15,u:'Mpa',f:2,j:.006},{k:'温度',v:47,u:'℃',f:1,j:.3},{k:'pH值',v:9.9,f:1,j:.03},{k:'碱度',v:12.5,u:'pt',f:1,j:.08}]},
+  {id:4, name:'超声波主脱脂', mode:'游浸+超声', params:[
+    {k:'压力',v:0.08,u:'Mpa',f:2,j:.005},{k:'温度',v:52,u:'℃',f:1,j:.3},{k:'pH值',v:9.0,f:1,j:.03},{k:'功率',v:2.4,u:'kW',f:1,j:.05}]},
+  {id:5, name:'水洗1',       mode:'喷淋', params:[
+    {k:'压力',v:0.16,u:'Mpa',f:2,j:.006},{k:'流量',v:10.8,u:'m³/h',f:1,j:.15},{k:'电导率',v:118,u:'μs/cm',f:0,j:2,wide:1}]},
+  {id:6, name:'水洗2',       mode:'游浸+超声', params:[
+    {k:'压力',v:0.12,u:'Mpa',f:2,j:.006},{k:'超声波',st:'运行'},{k:'电导率',v:96,u:'μs/cm',f:0,j:2,wide:1}]},
+  {id:7, name:'表调1-2',     mode:'喷淋', params:[
+    {k:'压力',v:0.14,u:'Mpa',f:2,j:.006},{k:'pH值',v:9.4,f:1,j:.03},{k:'钛浓度',v:0.32,u:'g/L',f:2,j:.006,wide:1}]},
+  {id:8, name:'磷化槽',      mode:'游浸', params:[
+    {k:'压力',v:0.05,u:'Mpa',f:2,j:.004},{k:'温度',v:34,u:'℃',f:1,j:.2},{k:'槽液',st:'三元系'},{k:'pH值',v:13.9,f:1,j:.05},
+    {k:'总酸',v:28.0,u:'pt',f:1,j:.2},{k:'游离酸',v:1.8,u:'pt',f:1,j:.06}]},
+  {id:9, name:'水洗3',       mode:'喷淋', params:[
+    {k:'压力',v:0.16,u:'Mpa',f:2,j:.006},{k:'流量',v:10.5,u:'m³/h',f:1,j:.15},{k:'电导率',v:96,u:'μs/cm',f:0,j:2,wide:1}]},
+  {id:10,name:'水洗4',       mode:'游浸+超声', params:[
+    {k:'压力',v:0.12,u:'Mpa',f:2,j:.006},{k:'超声波',st:'运行'},{k:'电导率',v:88,u:'μs/cm',f:0,j:2,wide:1}]},
+  {id:11,name:'纯水洗1-2',   mode:'喷淋', params:[
+    {k:'压力',v:0.10,u:'Mpa',f:2,j:.005},{k:'流量',v:6.8,u:'m³/h',f:1,j:.12},{k:'电导率',st:'0~1 μs/cm',wide:1}]},
+  {id:12,name:'电泳ED',      mode:'阴极电泳', pumps:['阳极泵1','阳极泵2'], params:[
+    {k:'一段电压',v:200,u:'V',f:0,j:2},{k:'二段电压',v:260,u:'V',f:0,j:3},
+    {k:'液温',v:53.8,u:'℃',f:1,j:.2},{k:'pH值',v:6.2,f:1,j:.02},{k:'电导率',v:1671,u:'μs/cm',f:0,j:6,wide:1}]},
+  {id:13,name:'UF1超滤',     mode:'一级水喷', params:[
+    {k:'压力',v:0.01,u:'Mpa',f:2,j:.002},{k:'流量',v:8.5,u:'m³/h',f:1,j:.12},{k:'电导率',v:1496,u:'μs/cm',f:0,j:5,wide:1}]},
+  {id:14,name:'UF2超滤',     mode:'二级水喷', params:[
+    {k:'压力',v:0.01,u:'Mpa',f:2,j:.002},{k:'流量',v:7.2,u:'m³/h',f:1,j:.12},{k:'电导率',v:1306,u:'μs/cm',f:0,j:5,wide:1}]},
+  {id:15,name:'纯水洗3-4',   mode:'喷淋', params:[
+    {k:'压力',v:0.10,u:'Mpa',f:2,j:.005},{k:'流量',v:6.5,u:'m³/h',f:1,j:.12},{k:'电导率',st:'3~14 μs/cm',wide:1}]},
+  {id:16,name:'预热烘干',    mode:'烘干', fans:['预热风机'], params:[
+    {k:'线速',v:16,u:'Hz',f:0,j:.3},{k:'温度',v:199,u:'℃',f:0,j:1},{k:'循环风',v:8500,u:'m³/h',f:0,j:30,wide:1}]},
+  {id:17,name:'固化',        mode:'烘干', fans:['固化风机','燃烧机'], params:[
+    {k:'温度',v:199,u:'℃',f:0,j:1},{k:'炉压',v:20,u:'Pa',f:0,j:3},{k:'循环风',v:9200,u:'m³/h',f:0,j:30,wide:1}]},
+  {id:18,name:'下件',        mode:'自动下件', params:[
+    {k:'合格率',st:'98.6%'},{k:'节拍',v:25,u:'s',f:0,j:0},{k:'今日下件',st:'12,736 件',wide:1,hook:'down'}]}
+];
+
+const ORDERS=[
+  ['01','MO202608150007','641771200A','单钢丝支架','单钢丝绳类','16:08','16:09',1276],
+  ['02','MO202607140006','JH31726A','钢丝支架','双钢丝绳类','16:41','10:08',7502],
+  ['03','MO202607140005','JH32088A','钢丝支架','','16:41','10:07',4309],
+  ['04','MO202607140004','652051300C','Bracket BUCKLE WIRE LOOP','双钢丝绳类','07:44','07:44',3510],
+  ['05','MO202607140003','Y1315845','钢丝绳总成','','07:05','12:50',2940],
+  ['06','MO202607140002','Y0545253','钢丝支架','双钢丝绳类','14:39','18:45',7291],
+  ['07','MO202607140001','6001094','钢丝绳总成','单钢丝绳类','08:31','12:50',9703],
+  ['08','MO202607080003','633756300A-X','钢丝支架','','07:46','07:46',6857],
+  ['09','MO202607080002','JH32338A','钢丝支架','双钢丝绳类','14:54','06:59',9138],
+  ['10','MO202607080001','641771200A','单钢丝支架','单钢丝绳类','13:29','06:59',10732],
+  ['11','MO202607070005','JH31121A','钢丝支架','双钢丝绳类','09:03','13:56',5046],
+  ['12','MO202607070004','661348600B','钢丝支架','双钢丝绳类','13:40','08:06',8056],
+  ['13','MO202607070003','661943900C','钢丝支架','双钢丝绳类','10:22','08:06',9535],
+  ['14','MO202607070002','661943900C','钢丝支架','双钢丝绳类','09:42','13:56',8351],
+  ['15','MO202607070001','668850900B','钢丝支架','双钢丝绳类','09:03','13:55',6864],
+  ['16','MO202607040004','GSS-29-001','钢丝支架','','11:19','14:54',9404],
+  ['17','MO202607040003','650852100B','Bracket BUCKLE WIRE LOOP','双钢丝绳类','13:15','16:18',5648],
+  ['18','MO202607040002','650852100B','Bracket BUCKLE WIRE LOOP','双钢丝绳类','13:16','16:19',4079],
+  ['19','MO202607040001','6001094','钢丝绳总成','单钢丝绳类','09:41','14:54',6853],
+  ['20','MO202607020005','665252800A','钢丝支架','单钢丝绳类','13:57','16:49',6365]
+];
+
+const PLANS=[
+  {n:'01',mo:'MO202608150005',name:'单钢丝组件',qty:4683,pct:62.0},
+  {n:'02',mo:'MO202608150004',name:'钢丝绳总成',qty:4412,pct:48.0},
+  {n:'03',mo:'MO202608150003',name:'短片',qty:19222,pct:35.4},
+  {n:'04',mo:'MO202608150002',name:'钢丝支架',qty:5133,pct:27.2},
+  {n:'05',mo:'MO202608150001',name:'钢丝支架',qty:2427,pct:18.6},
+  {n:'06',mo:'MO202607170001',name:'钢丝绳总成',qty:7835,pct:8.3}
+];
+
+const ALARMS=[
+  {st:'08',lv:1,txt:'磷化槽 · 槽液温度低于下限（34.0℃ / 35℃）',time:'10:42'},
+  {st:'14',lv:1,txt:'UF2 · 出口电导率偏高（1306μs/cm）',time:'13:05'},
+  {st:'17',lv:2,txt:'固化炉 · 燃烧机燃气压力波动',time:'11:20'},
+  {st:'06',lv:2,txt:'水洗2 · 超声波发生器通讯中断',time:'08:15',done:true},
+  {st:'04',lv:1,txt:'超声波主脱脂 · 槽液液位低预警',time:'09:30'}
+];
+
+/* ---------- 工艺段色带 ---------- */
+const ribbon=$('#ribbon');
+PHASES.forEach(p=>{
+  const seg=document.createElement('div');
+  seg.className='pr-seg';
+  seg.style.width=((p.to-p.from+1)/18*100)+'%';
+  seg.style.setProperty('--pc',p.color);
+  seg.innerHTML=`<span>${p.name}</span><i>${pad2(p.from)}-${pad2(p.to)}</i>`;
+  ribbon.appendChild(seg);
+});
+
+/* ---------- 蛇形工艺路线 ---------- */
+const NS='http://www.w3.org/2000/svg';
+const box=$('#routeBox');
+const svg=document.createElementNS(NS,'svg');
+svg.setAttribute('class','route-svg');
+svg.setAttribute('viewBox','0 0 1372 450');
+function mk(tag,attrs,parent){
+  const el=document.createElementNS(NS,tag);
+  for(const k in attrs)el.setAttribute(k,attrs[k]);
+  (parent||svg).appendChild(el);
+  return el;
+}
+const PATH_D='M 12 73 L 1344 73 Q 1362 73 1362 91 L 1362 207 Q 1362 225 1344 225 L 28 225 Q 10 225 10 243 L 10 359 Q 10 377 28 377 L 1348 377';
+mk('path',{class:'pipe-base',d:PATH_D});
+mk('path',{class:'pipe-inner',d:PATH_D});
+const flowPath=mk('path',{class:'pipe-flow',d:PATH_D});
+mk('path',{class:'pipe-arrow',d:'M 1360 377 L 1344 369 L 1344 385 Z'});
+const t1=mk('text',{class:'pipe-txt',x:20,y:58});t1.textContent='上件进线';
+const t2=mk('text',{class:'pipe-txt',x:1262,y:403});t2.textContent='成品出线';
+const dotsG=mk('g',{});
+const dots=[0,1,2].map(()=>mk('circle',{class:'fdot',r:4},dotsG));
+const WP_N=5;
+const wps=[];
+for(let i=0;i<WP_N;i++){
+  const g=mk('g',{});
+  mk('circle',{class:'wp-pulse',r:12},g);
+  mk('circle',{class:'wp-ring',r:9},g);
+  mk('circle',{class:'wp-core',r:4.5},g);
+  const t=mk('text',{class:'wp-txt',x:0,y:-17,'text-anchor':'middle'},g);
+  t.textContent='W'+(i+1);
+  wps.push(g);
+}
+box.appendChild(svg);
+
+const ROWS=[73,225,377],CX=126,GAPX=224,CARD_W=196;
+STATIONS.forEach((st,i)=>{
+  const row=i<6?0:(i<12?1:2);
+  const col=row===0?i:(row===1?5-(i-6):i-12);
+  const x=CX+col*GAPX,y=ROWS[row];
+  const h=st.id===12?156:(st.id===8?138:124);
+  const el=document.createElement('div');
+  el.className='stn';
+  el.style.cssText=`left:${x-CARD_W/2}px;top:${y-h/2}px;height:${h}px;--pc:${phaseOf(st.id).color}`;
+  let grid='';
+  st.params.forEach(p=>{
+    const cls=p.wide?'pv full':'pv';
+    const attr=p.hook?` data-p="${p.hook}"`:'';
+    if(p.st!==undefined){
+      grid+=`<div class="${cls}"${attr}><span>${p.k}</span><b class="${p.st==='运行'?'st-on':'st-tx'}">${p.st}</b></div>`;
+    }else{
+      grid+=`<div class="${cls}"${attr}><span>${p.k}</span><b>${p.v.toFixed(p.f)}</b>${p.u?`<i>${p.u}</i>`:''}</div>`;
+    }
+  });
+  let extra='';
+  if(st.pumps)extra=`<div class="stn-extra">${st.pumps.map(p=>`<em>${p}</em>`).join('')}</div>`;
+  if(st.fans)extra=`<div class="stn-extra">${st.fans.map(p=>`<em>${p}</em>`).join('')}</div>`;
+  el.innerHTML=`<div class="stn-live">工件加工中</div>
+    <div class="stn-top"><span class="stn-num">${pad2(st.id)}</span><span class="stn-name">${st.name}</span><span class="stn-dot"></span></div>
+    <div class="stn-mode">${st.mode}</div>
+    <div class="stn-grid">${grid}</div>${extra}`;
+  box.appendChild(el);
+  st.el=el;st.x=x;st.y=y;
+  st.pvEls=[];
+  el.querySelectorAll('.stn-grid .pv b').forEach((b,pi)=>{
+    const p=st.params[pi];
+    if(p&&p.st===undefined){p.base=p.v;st.pvEls.push({b,p});}
+  });
+});
+
+const L=flowPath.getTotalLength();
+const stLen=STATIONS.map(st=>{
+  let best=0,bd=Infinity;
+  for(let k=0;k<=600;k++){
+    const l=L*k/600,pt=flowPath.getPointAtLength(l);
+    const dd=(pt.x-st.x)**2+(pt.y-st.y)**2;
+    if(dd<bd){bd=dd;best=l;}
+  }
+  return best;
+});
+
+/* ---------- 底部工序进度 ---------- */
+const rfSteps=$('#rfSteps');
+STATIONS.forEach(st=>{
+  const i=document.createElement('i');
+  i.style.setProperty('--pc',phaseOf(st.id).color);
+  rfSteps.appendChild(i);
+});
+const stepEls=rfSteps.children;
+const rfNum=$('#rfNum'),rfName=$('#rfName'),rfPhase=$('#rfPhase');
+const prTicks=[];
+for(let i=0;i<WP_N;i++){
+  const tk=document.createElement('div');
+  tk.className='pr-tick';
+  tk.style.left=(i/WP_N*100)+'%';
+  ribbon.appendChild(tk);
+  prTicks.push(tk);
+}
+
+const LOOP=34;
+let lastKey='';
+function frame(ts){
+  const t=((ts/1000)%LOOP)/LOOP*L;
+  for(let k=0;k<3;k++){
+    const p=flowPath.getPointAtLength((t+(k+1)*L/4)%L);
+    dots[k].setAttribute('cx',p.x);dots[k].setAttribute('cy',p.y);
+  }
+  const pos=new Array(WP_N),stOf=new Array(WP_N);
+  for(let i=0;i<WP_N;i++){
+    pos[i]=(t+i*L/WP_N)%L;
+    const p=flowPath.getPointAtLength(pos[i]);
+    wps[i].setAttribute('transform',`translate(${p.x},${p.y})`);
+    prTicks[i].style.left=(pos[i]/L*100).toFixed(2)+'%';
+  }
+  const act=new Array(18).fill(false);
+  for(let w=0;w<WP_N;w++){
+    let idx=0;
+    for(let i=0;i<18;i++)if(stLen[i]<=pos[w])idx=i;
+    act[idx]=true;stOf[w]=idx;
+    const pc=phaseOf(STATIONS[idx].id).color;
+    if(wps[w]._pc!==pc){wps[w].style.setProperty('--wpc',pc);wps[w]._pc=pc;}
+  }
+  const key=stOf[0]+':'+act.map(v=>v?1:0).join('');
+  if(key!==lastKey){
+    lastKey=key;
+    for(let i=0;i<18;i++){
+      STATIONS[i].el.classList.toggle('active',act[i]);
+      stepEls[i].classList.toggle('on',act[i]);
+    }
+    const st=STATIONS[stOf[0]],p=phaseOf(st.id);
+    rfNum.textContent=pad2(st.id);
+    rfName.textContent=st.name;
+    rfPhase.textContent=p.name+'段';
+    rfPhase.style.setProperty('--pc',p.color);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ---------- 报警列表（无数据时显示全部正常） ---------- */
+const alarmList=$('#alarmList');
+if(ALARMS.length===0){
+  alarmList.innerHTML='<div class="al-empty"><i></i>全部设备运行正常</div>';
+}else{
+  ALARMS.forEach((a,i)=>{
+    const d=document.createElement('div');
+    d.className='al lv'+a.lv+(i===0?' cur':'');
+    d.innerHTML=`<span class="al-st">${a.st}</span><span class="al-dot"></span>
+      <span class="al-txt">${a.txt}${a.done?'<em>已闭环</em>':''}</span><span class="al-time">${a.time}</span>`;
+    alarmList.appendChild(d);
+  });
+  let alIdx=0;
+  const alEls=alarmList.children;
+  setInterval(()=>{
+    alEls[alIdx].classList.remove('cur');
+    alIdx=(alIdx+1)%alEls.length;
+    alEls[alIdx].classList.add('cur');
+  },4000);
+}
+
+/* ---------- 完成工单 ---------- */
+const ordRow=r=>`<tr><td class="ct">${r[0]}</td><td class="mo">${r[1]}</td><td class="mo">${r[2]}</td><td>${r[3]||'—'}</td><td>${r[4]||'—'}</td><td class="ct">${r[5]}</td><td class="ct">${r[6]}</td><td class="ct rt">${fmt(r[7])}</td></tr>`;
+const ordHead=`<tr><th style="width:34px">序号</th><th style="width:128px">工单号</th><th style="width:118px">产品编码</th><th style="width:172px">零件名称</th><th style="width:104px">规格型号</th><th style="width:66px">上件</th><th style="width:66px">下件</th><th class="rt" style="width:60px">数量</th></tr>`;
+const ordBody=ORDERS.map(ordRow).join('');
+$('#ordIn').innerHTML=`<table class="ord"><thead>${ordHead}</thead><tbody>${ordBody}</tbody></table>
+  <table class="ord"><thead style="visibility:hidden;height:0">${ordHead.replace(/<th/g,'<th style="padding:0;border:0;height:0;font-size:0"')}</thead><tbody>${ordBody}</tbody></table>`;
+
+/* ---------- 排产计划 ---------- */
+const planList=$('#planList');
+PLANS.forEach(pl=>{
+  const d=document.createElement('div');
+  d.className='pl-row';
+  d.innerHTML=`<span class="pl-num">${pl.n}</span><span class="pl-mo">${pl.mo}</span><span class="pl-name">${pl.name}</span>
+    <span class="pl-bar"><b style="width:${pl.pct}%"></b></span><span class="pl-qty">${fmt(pl.qty)}</span><span class="pl-pct">${pl.pct.toFixed(1)}%</span>`;
+  planList.appendChild(d);
+  pl.barEl=d.querySelector('.pl-bar b');
+  pl.pctEl=d.querySelector('.pl-pct');
+});
+setInterval(()=>{
+  PLANS.forEach((pl,i)=>{
+    if(i>2)return;
+    pl.pct=Math.min(pl.pct+Math.random()*.2,99.4);
+    pl.barEl.style.width=pl.pct+'%';
+    pl.pctEl.textContent=pl.pct.toFixed(1)+'%';
+  });
+},3000);
+
+/* ---------- 时钟 ---------- */
+const T0=Date.now(),BASE_RUN=8*3600+30*60+45;
+const dateTxt=$('#dateTxt'),wkTxt=$('#wkTxt'),timeTxt=$('#timeTxt'),runTxt=$('#runTxt'),ovRun=$('#ovRun');
+const fmtHMS=s=>`${pad2(Math.floor(s/3600))}:${pad2(Math.floor(s%3600/60))}:${pad2(Math.floor(s%60))}`;
+function tickClock(){
+  const now=new Date();
+  dateTxt.textContent=`${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
+  wkTxt.textContent='星期'+'日一二三四五六'[now.getDay()];
+  timeTxt.textContent=`${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`;
+  const run=BASE_RUN+Math.floor((Date.now()-T0)/1000);
+  const s=fmtHMS(run);
+  runTxt.textContent=s;ovRun.textContent=s;
+}
+tickClock();setInterval(tickClock,500);
+
+/* ---------- KPI 模拟 ---------- */
+let output=12736;
+const PLAN_TOTAL=14500;
+const kOut=$('#kOut'),kRate=$('#kRate'),kRateBar=$('#kRateBar'),kWip=$('#kWip'),
+      kTakt=$('#kTakt'),ovTakt=$('#ovTakt'),kCost=$('#kCost');
+const downEl=document.querySelector('[data-p="down"]');
+function flash(el){
+  el.classList.add('chg');
+  setTimeout(()=>el.classList.remove('chg'),500);
+}
+setInterval(()=>{
+  output+=1+Math.floor(Math.random()*3);
+  kOut.textContent=fmt(output);
+  flash(kOut);
+  const rate=Math.min(output/PLAN_TOTAL*100,99.9);
+  kRate.textContent=rate.toFixed(1);
+  kRateBar.style.width=rate+'%';
+  kWip.textContent=fmt(3240+Math.round((Math.random()-.5)*40));
+  const takt=(2.3+Math.random()*.2).toFixed(1);
+  kTakt.textContent=takt;ovTakt.textContent=takt+' 件/min';
+  kCost.textContent=(0.42+(Math.random()-.5)*.012).toFixed(2);
+  if(downEl)downEl.textContent=fmt(output)+' 件';
+},2000);
+
+/* ---------- 工位参数跳动 ---------- */
+setInterval(()=>{
+  STATIONS.forEach(st=>{
+    st.pvEls.forEach(({b,p})=>{
+      let v=p.base+(Math.random()-.5)*2*p.j;
+      if(p.u==='Mpa')v=Math.max(v,.004);
+      if(p.k.includes('温度'))v=Math.max(v,p.base-1.5);
+      b.textContent=v.toFixed(p.f);
+      flash(b);
+    });
+  });
+},1500);
+
+/* ---------- 图表 ---------- */
+function initCharts(){
+  const has=typeof echarts!=='undefined';
+  if(!has){
+    $('#engChart').innerHTML='<div class="chart-fb">ECharts 加载失败（需联网）</div>';
+    $('#trendChart').innerHTML='<div class="chart-fb">ECharts 加载失败（需联网）</div>';
+    return;
+  }
+  const axis={color:'#7f9cc7',fontSize:11};
+  const tip={backgroundColor:'rgba(8,20,40,.94)',borderColor:'rgba(70,150,230,.4)',
+    textStyle:{color:'#dce8fa',fontSize:12}};
+  echarts.init($('#engChart')).setOption({
+    animationDuration:1100,
+    grid:{left:38,right:8,top:30,bottom:22},
+    legend:{data:['电','水','燃气'],textStyle:axis,itemWidth:12,itemHeight:8,top:0,right:0,itemGap:14},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},...tip},
+    xAxis:{type:'category',data:['3月','4月','5月','6月','7月','8月'],
+      axisLine:{lineStyle:{color:'rgba(90,140,210,.4)'}},axisTick:{show:false},axisLabel:axis},
+    yAxis:{type:'value',splitLine:{lineStyle:{color:'rgba(90,140,210,.12)'}},axisLabel:axis},
+    series:[
+      {name:'电',type:'bar',barWidth:9,itemStyle:{color:'#3aa0ff',borderRadius:[2,2,0,0]},data:[11.2,12.8,13.5,12.1,14.2,11.6]},
+      {name:'水',type:'bar',barWidth:9,itemStyle:{color:'#2ee0c8',borderRadius:[2,2,0,0]},data:[2.1,2.4,2.2,2.6,2.8,2.3]},
+      {name:'燃气',type:'bar',barWidth:9,itemStyle:{color:'#ffa94d',borderRadius:[2,2,0,0]},data:[4.5,5.2,5.8,5.5,6.4,5.1]}
+    ]
+  });
+  echarts.init($('#trendChart')).setOption({
+    animationDuration:1100,
+    grid:{left:48,right:14,top:22,bottom:22},
+    tooltip:{trigger:'axis',...tip},
+    xAxis:{type:'category',boundaryGap:false,data:['08-22','08-23','08-24','08-25','08-26','08-27','今日'],
+      axisLine:{lineStyle:{color:'rgba(90,140,210,.4)'}},axisTick:{show:false},axisLabel:axis},
+    yAxis:{type:'value',splitLine:{lineStyle:{color:'rgba(90,140,210,.12)'}},axisLabel:axis},
+    series:[{
+      type:'line',smooth:true,symbol:'circle',symbolSize:5,
+      lineStyle:{color:'#3aa0ff',width:2.5,shadowColor:'rgba(58,160,255,.5)',shadowBlur:8},
+      itemStyle:{color:'#3aa0ff'},
+      areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[
+        {offset:0,color:'rgba(58,160,255,.32)'},{offset:1,color:'rgba(58,160,255,0)'}])},
+      data:[10820,11460,10230,11980,11150,12460,
+        {value:12736,itemStyle:{color:'#2ee0c8',borderColor:'#dff6ff',borderWidth:2},symbolSize:9}]
+    }]
+  });
+}
+initCharts();
+})();
+</script>
+</body>
+</html>
