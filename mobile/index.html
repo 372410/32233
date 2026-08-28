@@ -36,7 +36,7 @@
                     </svg>
                     <input type="password" id="loginPwd" value="123456" placeholder="请输入密码" autocomplete="current-password" maxlength="20">
                     <button type="button" class="pwd-toggle" id="togglePwd" aria-label="显示或隐藏密码">
-                        <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                         </svg>
                     </button>
@@ -78,52 +78,44 @@
             </header>
 
             <div class="page-body">
-                <div class="stats-grid" id="statsGrid">
-                    <!-- 指标卡片由 app.js 渲染 -->
-                </div>
+                <div class="stats-grid" id="statsGrid"></div>
 
                 <div class="section-head">
                     <h3 class="section-title">待处理工单</h3>
                     <span class="section-count" id="pendingCount">0 单</span>
                 </div>
-                <div class="order-mini-list" id="pendingList">
-                    <!-- 待处理工单由 app.js 渲染 -->
-                </div>
+                <div class="order-mini-list" id="pendingList"></div>
             </div>
         </section>
 
-        <!-- Tab 2：工单列表 -->
-        <section class="page" id="page-orders">
+        <!-- Tab 2：质量检查 -->
+        <section class="page" id="page-qc">
             <header class="page-header">
-                <h2 class="page-header-title">工单列表</h2>
-                <span class="page-header-sub" id="orderTotal">共 0 单</span>
+                <h2 class="page-header-title">质量检查</h2>
+                <span class="page-header-sub" id="qcSummary">--</span>
             </header>
 
-            <div class="filter-bar" id="orderFilter">
-                <button class="filter-btn active" data-filter="全部">全部</button>
-                <button class="filter-btn" data-filter="生产中">生产中</button>
-                <button class="filter-btn" data-filter="待料">待料</button>
-                <button class="filter-btn" data-filter="已完成">已完成</button>
+            <div class="filter-bar" id="qcFilter">
+                <button class="filter-btn active" data-qc="来料检">来料检</button>
+                <button class="filter-btn" data-qc="出货检">出货检</button>
+                <button class="filter-btn" data-qc="过程检">过程检</button>
+                <button class="filter-btn" data-qc="成品入库检">成品入库检</button>
             </div>
 
             <div class="page-body">
-                <div class="order-list" id="orderList">
-                    <!-- 工单卡片由 app.js 渲染 -->
-                </div>
+                <div class="qc-list" id="qcList"></div>
             </div>
         </section>
 
-        <!-- Tab 3：设备状态 -->
-        <section class="page" id="page-equipment">
+        <!-- Tab 3：工作台 -->
+        <section class="page" id="page-bench">
             <header class="page-header">
-                <h2 class="page-header-title">设备状态</h2>
-                <span class="page-header-sub" id="equipSummary">--</span>
+                <h2 class="page-header-title">工作台</h2>
+                <span class="page-header-sub" id="benchUser">--</span>
             </header>
 
             <div class="page-body">
-                <div class="equip-list" id="equipmentList">
-                    <!-- 设备卡片由 app.js 渲染 -->
-                </div>
+                <div id="benchGrid"></div>
             </div>
         </section>
 
@@ -157,11 +149,83 @@
                     </div>
                 </div>
 
+                <div class="section-head">
+                    <h3 class="section-title">我的报工记录</h3>
+                    <span class="section-count" id="myReportCount">0 条</span>
+                </div>
+                <div class="report-list" id="myReportList"></div>
+
                 <button class="logout-btn" id="logoutBtn">退出登录</button>
             </div>
         </section>
 
-        <!-- 底部导航 -->
+        <!-- 子页：我的通知 -->
+        <section class="subpage" id="page-notice">
+            <header class="subpage-header">
+                <button class="back-btn" data-back="1" aria-label="返回">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <h2 class="subpage-title">我的通知</h2>
+                <span class="subpage-spacer"></span>
+            </header>
+            <div class="subpage-body" id="noticeBody"></div>
+        </section>
+
+        <!-- 子页：设置 -->
+        <section class="subpage" id="page-settings">
+            <header class="subpage-header">
+                <button class="back-btn" data-back="1" aria-label="返回">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <h2 class="subpage-title">设置</h2>
+                <span class="subpage-spacer"></span>
+            </header>
+            <div class="subpage-body" id="settingsBody"></div>
+        </section>
+
+        <!-- 子页：工单详情 -->
+        <section class="subpage" id="page-order-detail">
+            <header class="subpage-header">
+                <button class="back-btn" data-back="1" aria-label="返回">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <h2 class="subpage-title">工单详情</h2>
+                <span class="subpage-spacer"></span>
+            </header>
+            <div class="subpage-body" id="orderDetailBody"></div>
+            <div class="subpage-footer">
+                <button class="primary-btn" id="orderReportBtn">报 工</button>
+            </div>
+        </section>
+
+        <!-- 子页：质检报告 -->
+        <section class="subpage" id="page-qc-detail">
+            <header class="subpage-header">
+                <button class="back-btn" data-back="1" aria-label="返回">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <h2 class="subpage-title">质检报告</h2>
+                <span class="subpage-spacer"></span>
+            </header>
+            <div class="subpage-body" id="qcDetailBody"></div>
+        </section>
+
+        <!-- 子页：报工表单 -->
+        <section class="subpage" id="page-report-form">
+            <header class="subpage-header">
+                <button class="back-btn" data-back="1" aria-label="返回">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <h2 class="subpage-title">扫码报工</h2>
+                <span class="subpage-spacer"></span>
+            </header>
+            <div class="subpage-body" id="reportFormBody"></div>
+            <div class="subpage-footer">
+                <button class="primary-btn" id="reportSubmitBtn">提交报工</button>
+            </div>
+        </section>
+
+        <!-- 底部导航（5 槽位，中央 + 号） -->
         <nav class="tabbar">
             <button class="tab-item active" data-page="page-home">
                 <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -169,17 +233,23 @@
                 </svg>
                 <span class="tab-label">首页看板</span>
             </button>
-            <button class="tab-item" data-page="page-orders">
+            <button class="tab-item" data-page="page-qc">
                 <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>
+                    <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/><path d="M8 11l2 2 4-4"/>
                 </svg>
-                <span class="tab-label">工单列表</span>
+                <span class="tab-label">质量检查</span>
             </button>
-            <button class="tab-item" data-page="page-equipment">
+            <button class="tab-item tab-center" id="scanBtn" aria-label="扫码报工">
+                <span class="tab-plus">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                </span>
+                <span class="tab-label">扫码报工</span>
+            </button>
+            <button class="tab-item" data-page="page-bench">
                 <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
                 </svg>
-                <span class="tab-label">设备状态</span>
+                <span class="tab-label">工作台</span>
             </button>
             <button class="tab-item" data-page="page-profile">
                 <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -189,6 +259,42 @@
             </button>
         </nav>
     </div>
+
+    <!-- 扫码报工弹窗 -->
+    <div class="modal-mask hidden" id="scanModal">
+        <div class="modal">
+            <div class="modal-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8v8"/><path d="M11 8v8"/><path d="M15 8v5"/><path d="M18 8v8"/>
+                </svg>
+            </div>
+            <h3 class="modal-title">扫码报工</h3>
+            <p class="modal-desc">扫描工单条码，快速定位工单并提交报工</p>
+            <div class="modal-actions">
+                <button class="modal-btn ghost" data-close="1">取消</button>
+                <button class="modal-btn solid" id="scanGoBtn">开始扫码报工</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 权限不足弹窗 -->
+    <div class="modal-mask hidden" id="denyModal">
+        <div class="modal">
+            <div class="modal-icon deny">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v2.5"/>
+                </svg>
+            </div>
+            <h3 class="modal-title">权限不足</h3>
+            <p class="modal-desc">您暂无该模块的访问权限<br>请联系计划部更改权限</p>
+            <div class="modal-actions">
+                <button class="modal-btn solid" data-close="1">知道了</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast hidden" id="toast"></div>
 
     <!-- 业务数据：全部来自项目根目录 data.js，移动端代码不定义任何业务数据 -->
     <script src="../data.js"></script>
