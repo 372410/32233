@@ -5,7 +5,7 @@ Web端：https://372410.github.io/32233/
 
 工业看板：https://372410.github.io/32233/BI/
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 1650" width="1700" height="1650" font-family="'PingFang SC','Microsoft YaHei','Noto Sans CJK SC','Source Han Sans SC',sans-serif">
-<title>MES 制造执行系统 PC 端功能模块思维导图</title>
+
 <defs>
 <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.4" cy="1.4" r="1.1" fill="#D3DCE6"/></pattern>
 <linearGradient id="gRoot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#274B70"/><stop offset="1" stop-color="#1B3A59"/></linearGradient>
