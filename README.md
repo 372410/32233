@@ -7,8 +7,8 @@
 - 移动端现场作业：https://372410.github.io/32233/mobile/
 - 工业BI看板：https://372410.github.io/32233/BI/
 - 📖完整项目文档：https://372410.github.io/32233/docs/
-- 
-## ⚙技术栈
+
+## 实现方式
 - 前端：HTML / JavaScript / CSS
 - 图表：ECharts
 ## 业务背景
