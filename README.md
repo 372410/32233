@@ -12,10 +12,6 @@
 针对涂装车间磷化、电泳工艺，模拟多工位产线，解决工单下发、生产进度跟踪、设备异常告警、产量能耗统计，支持班组长Web端管理、计划员下发任务，现场工人移动端（PDA+手机）扫码报工操作、大屏展示生产数据。基于客户需求完成快速原型设计和工业看板设计。
 
 ## Web端功能模块图
-> [功能模块思维图svg] (screenshot/mes-module-mind.svg)
-> ![Web端MES系统功能模块思维导图](./screenshot/mes-module-mind.svg)
-> Web端功能模块图见 [功能模块思维图 svg](screenshot/mes-module-mind.svg)
-
 <img width="3400" height="3300" alt="mes-module-mind" src="https://github.com/user-attachments/assets/84cf9c3a-2d77-4f14-8d28-3acff236efa1" />
 
 ## 📁项目交付物
