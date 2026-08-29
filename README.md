@@ -36,8 +36,9 @@
 > 涂装完整工艺说明见 [涂装工艺说明](涂装工艺说明.md)
 
 ## 系统界面截图
-
 <img src="./screenshot2/customer_manage.png" width="300">
+## 系统界面截图2
+<img src="https://raw.githubusercontent.com/372410/32233/main/screenshot2/customer_manage.png" width="300" alt="客户管理">
 
 
 
