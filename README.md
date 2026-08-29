@@ -33,68 +33,34 @@
 4. **烘干固化段**：预烘干→固化→下件，漆膜固化成型
 
 
-> 涂装完整工艺说明见 [涂装工艺说明](涂装工艺说明.md)
-
-
+> 涂装完整工艺说明见 [涂装工艺说明](涂装工艺说明.md)<img width="1117" height="664" alt="login_page" src="https://github.com/user-attachments/assets/96418506-b0ed-40db-a39d-df5574f02222" />
 
 ## 系统界面截图
 
-<table>
-  <tr>
-    <td><img src="./screenshot2/customer_edit.png" width="300"></td>
-    <td><img src="./screenshot2/customer_manage.png" width="300"></td>
-    <td><img src="./screenshot2/dashboard_overview.png" width="300"></td>
-  </tr>
-  <tr>
-    <td>客户编辑</td>
-    <td>客户管理</td>
-    <td>首页数据概览</td>
-  </tr>
 
-  <tr>
-    <td><img src="./screenshot2/login_page.png" width="300"></td>
-    <td><img src="./screenshot2/message_notice.png" width="300"></td>
-    <td><img src="./screenshot2/product_add.png" width="300"></td>
-  </tr>
-  <tr>
-    <td>登录界面</td>
-    <td>消息通知</td>
-    <td>产品新增</td>
-  </tr>
 
-  <tr>
-    <td><img src="./screenshot2/product_edit.png" width="300"></td>
-    <td><img src="./screenshot2/product_info_view.png" width="300"></td>
-    <td><img src="./screenshot2/product_manage_page.png" width="300"></td>
-  </tr>
-  <tr>
-    <td>产品编辑</td>
-    <td>产品信息查看</td>
-    <td>产品管理页面</td>
-  </tr>
 
-  <tr>
-    <td><img src="./screenshot2/product_type_add.png" width="300"></td>
-    <td><img src="./screenshot2/product_type_delete.png" width="300"></td>
-    <td><img src="./screenshot2/product_type_edit.png" width="300"></td>
-  </tr>
-  <tr>
-    <td>产品类型新增</td>
-    <td>产品类型删除</td>
-    <td>产品类型编辑</td>
-  </tr>
 
-  <tr>
-    <td><img src="./screenshot2/product_type_list.png" width="300"></td>
-    <td><img src="./screenshot2/product_type_search.png" width="300"></td>
-    <td><img src="./screenshot2/production_order_query.png" width="300"></td>
-  </tr>
-  <tr>
-    <td>产品类型列表</td>
-    <td>产品类型搜索</td>
-    <td>生产订单查询</td>
-  </tr>
-</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+![Uploading login_page.png…]()
 
 
 
