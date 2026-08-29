@@ -43,6 +43,10 @@
 ## 系统界面截图3
 <img src="https://raw.githubusercontent.com/372410/32233/main/screenshot2/customer_manage.png" width="300" alt="客户管理">
 
+## 系统界面截图4
+![客户管理](./screenshot2/customer_manage.png)
+
+
 
 
 
