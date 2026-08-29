@@ -13,6 +13,7 @@
 
 ## Web端功能模块图
 > [功能模块思维图svg] (screenshot/mes-module-mind.svg)
+> ![Web端MES系统功能模块思维导图](./screenshot/mes-module-mind.svg)
 <img width="3400" height="3300" alt="mes-module-mind" src="https://github.com/user-attachments/assets/84cf9c3a-2d77-4f14-8d28-3acff236efa1" />
 
 ## 📁项目交付物
