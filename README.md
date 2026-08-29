@@ -35,5 +35,12 @@
 
 > 涂装完整工艺说明见 [涂装工艺说明](涂装工艺说明.md)
 
+## MES系统界面截图
+![编辑客户](./screemshoot2/customer_edit.png)
+![客户管理页面](./screemshoot2/customer_manage.png)
+![首页数据概览](./screemshoot2/dashboard_overview.png)
+![登录界面](./screemshoot2/login_page.png)
+![消息通知](./screemshoot2/message_notice.png)
+![新增产品](./screemshoot2/product_add.png)
 
 
