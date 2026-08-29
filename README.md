@@ -33,7 +33,7 @@
 4. **烘干固化段**：预烘干→固化→下件，漆膜固化成型
 
 
-> 涂装完整工艺说明见 [涂装工艺说明](涂装工艺说明.md)<img width="1117" height="664" alt="login_page" src="https://github.com/user-attachments/assets/96418506-b0ed-40db-a39d-df5574f02222" />
+> 涂装完整工艺说明见 [涂装工艺说明](涂装工艺说明.md)
 
 ## 系统界面截图
 
