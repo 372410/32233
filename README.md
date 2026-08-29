@@ -1,19 +1,15 @@
 # 专属于涂装行业的MES系统原型设计
-Web端原型设计地址：https://372410.github.io/32233/
 
-移动端原型：https://372410.github.io/32233/mobile/
-
-工业看板展示：https://372410.github.io/32233/BI/
 
 
 <img width="3400" height="3300" alt="mes-module-mind" src="https://github.com/user-attachments/assets/84cf9c3a-2d77-4f14-8d28-3acff236efa1" />
 
-# 涂装行业MES系统原型设计
+# 专属于涂装行业的MES系统原型设计
 > 岗位：MES实施工程师｜面向电泳、磷化涂装车间的MES原型项目
 本项目模拟涂装工厂MES全业务场景，完成原型开发、需求梳理、交付文档输出，覆盖车间生产执行、设备监控、工单管理、BI看板、移动端现场作业。
 
 ## 🔗在线演示地址
-- Web管理端：https://372410.github.io/32233/
+- Web管理端原型设计地址：https://372410.github.io/32233/
 - 移动端现场作业：https://372410.github.io/32233/mobile/
 - 工业BI看板：https://372410.github.io/32233/BI/
 - 📖完整项目文档：https://372410.github.io/32233/docs/
@@ -21,12 +17,8 @@ Web端原型设计地址：https://372410.github.io/32233/
 ## 业务背景
 针对涂装车间磷化、电泳工艺，模拟多工位产线，解决工单下发、生产进度跟踪、设备异常告警、产量能耗统计，支持班组长Web端管理、现场工人移动端操作、大屏展示生产数据。
 
-## 核心业务模块
-1. 工单管理：工单下发、进度跟踪、完工统计
-2. 产线监控：电泳18道工位模拟，设备状态、告警提示
-3. 工业BI看板：产量、良率、设备稼动率、能耗可视化
-4. 移动端：现场工位查看、异常上报
-5. 生产统计：班次产量、工艺节拍统计
+## Web端功能模块图
+<img width="3400" height="3300" alt="mes-module-mind" src="https://github.com/user-attachments/assets/84cf9c3a-2d77-4f14-8d28-3acff236efa1" />
 
 ## 📁项目交付物
 > [交付文档文件夹](./deliverable/)
