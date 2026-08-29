@@ -1,10 +1,4 @@
 # 专属于涂装行业的MES系统原型设计
-
-
-
-<img width="3400" height="3300" alt="mes-module-mind" src="https://github.com/user-attachments/assets/84cf9c3a-2d77-4f14-8d28-3acff236efa1" />
-
-# 专属于涂装行业的MES系统原型设计
 > 岗位：MES实施工程师｜面向电泳、磷化涂装车间的MES原型项目
 本项目模拟涂装工厂MES全业务场景，完成原型开发、需求梳理、交付文档输出，覆盖车间生产执行、设备监控、工单管理、BI看板、移动端现场作业。
 
