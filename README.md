@@ -37,6 +37,8 @@
 
 ## 系统界面截图
 
+<img src="./screenshot2/customer_manage.png" width="300">
+
 
 
 
