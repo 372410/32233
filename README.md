@@ -11,7 +11,7 @@
 - Web管理端原型设计地址：https://372410.github.io/32233/
 - 移动端现场作业：https://372410.github.io/32233/mobile/
 - 工业BI看板：https://372410.github.io/32233/BI/
-- 📖完整项目文档：https://372410.github.io/32233/docs/
+
 
 ## 实现方式
 - 前端：HTML / JavaScript / CSS
