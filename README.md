@@ -52,7 +52,7 @@
 <table align="center" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/产品管理-产品管理.png" width="350" alt="产品管理主界面">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端-质量检验.png" width="350" alt="移动质检界面">
       <div>Web端 · 产品管理</div>
     </td>
     <td align="center">
