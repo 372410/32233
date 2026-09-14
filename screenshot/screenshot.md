@@ -185,4 +185,135 @@
     </td>
   </tr>
 </table>
+## 六、设备保养与点检模块
+建立设备预防性维护体系，覆盖保养项目、保养计划、点检项目、点检计划全流程，自动生成维护任务，保障涂装设备稳定运行。
+
+### 6.1 保养项目与保养计划
+维护保养项目标准库，按周期制定设备保养计划，绑定保养项明细，支持按月度/季度等循环周期配置。
+
+<table align="center" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/保养项目详情.png" width="350" alt="保养项目详情">
+      <div>保养项目详情</div>
+    </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/编辑保养计划.png" width="350" alt="编辑保养计划">
+      <div>编辑保养计划</div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/保养计划详情.png" width="350" alt="保养计划详情">
+      <div>保养计划详情</div>
+    </td>
+  </tr>
+</table>
+
+### 6.2 点检项目与点检计划
+搭建设备点检标准库，制定日常点检计划，明确点检项与执行要求，支持按日/周/月周期循环执行。
+
+<table align="center" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/点检项目展示.png" width="350" alt="点检项目列表">
+      <div>点检项目列表</div>
+    </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/新增点检计划.png" width="350" alt="编辑点检计划">
+      <div>编辑点检计划</div>
+    </td>
+  </tr>
+</table>
+
+### 6.3 维护任务处理
+保养、点检计划自动生成对应任务，统一展示任务状态、执行时间与负责人，支持任务执行与全流程进度追踪。
+
+<p align="center">
+<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/任务处理情况.png" width="720" alt="维护任务处理">
+</p>
+
+## 七、质检管理模块
+构建涂装全流程质检体系，维护检验项目标准库，配置多场景质检方案，支撑来料检、过程检、成品检等各环节质量管控。
+
+### 7.1 检验项目管理
+维护涂装核心质量检验项，包含膜厚、附着力、色差等检测指标，明确检验方法与数据类型。
+
+<p align="center">
+<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/质检项目.png" width="720" alt="检验项目列表">
+</p>
+
+### 7.2 质检方案配置
+按业务场景配置质检方案，支持来料检、过程检、出货检等多种检验类型，灵活匹配不同工序的质检需求。
+
+<p align="center">
+<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/质检方案设置.png" width="720" alt="质检方案配置">
+</p>
+## 八、质检记录与质量追溯模块
+记录各工序质检结果，支持按产品、工序、时间查询质检数据，形成从来料检、过程检到成品检的质量闭环追溯。
+
+### 8.1 来料检与过程检
+记录原材料、外协件及工序检验结果，支持按生产工单、产品、检验时间快速检索，实时掌握批次质量状态。
+
+<table align="center" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/来料检记录.png" width="350" alt="来料检记录">
+      <div>来料检记录</div>
+    </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/来料检.png" width="350" alt="来料检列表">
+      <div>来料检列表</div>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/过程检.png" width="350" alt="过程检列表">
+      <div>过程检列表</div>
+    </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/产品质量追溯界面.png" width="350" alt="产品质量追溯界面">
+      <div>产品质量追溯</div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/产品追溯详情.png" width="350" alt="产品追溯详情">
+      <div>产品追溯详情</div>
+    </td>
+  </tr>
+</table>
+
+### 8.2 质量统计分析
+通过批量质检统计、单项质检统计、检验项目合格率等图表，直观展示质量趋势、不良分布与关键指标达成情况。
+
+<table align="center" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/批量质检统计.png" width="350" alt="批量质检统计">
+      <div>批量质检统计</div>
+    </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/单项质检统计.png" width="350" alt="单项质检统计">
+      <div>单项质检统计</div>
+    </td>
+  </tr>
+</table>
+
+## 九、库存与预警模块
+管理原材料、半成品、成品库存信息，结合安全库存与有效期规则进行库存预警，帮助企业降低积压、缺料与过期风险。
+
+### 9.1 库存查询
+按物料编码、名称、仓库、批次等条件查询库存数量，实时掌握物料可用量、库位与批次状态。
+
+<p align="center">
+<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/库存查询.png" width="720" alt="库存查询界面">
+</p>
+
+### 9.2 库存预警
+对低于安全库存、临近有效期或超期物料进行预警提醒，支持按预警类型快速处理库存异常。
+
+<p align="center">
+<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/库存预警.png" width="720" alt="库存预警界面">
+</p>
 
