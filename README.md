@@ -19,13 +19,14 @@
 
 ## 📁项目交付物
 > [交付文档文件夹](./deliverable/)
+- [系统界面截图集](./screenshot/screenshot.md)
 - 需求规格说明书
 - [工艺流转卡.PDF下载](https://raw.githubusercontent.com/372410/32233/main/docs/工艺流转卡.pdf)
 - 车间业务流程图
 - 实施部署手册
 - 用户操作手册
 - 简易数据字典
-- 完整界面截图请查看：[系统界面截图集](./screenshot/screenshot.md)
+
 
 ## 🧪涂装工艺说明
 本原型基于真实电泳涂装产线设计，18道工位按工艺分为4段：
