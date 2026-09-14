@@ -20,6 +20,7 @@
 ## 📁项目交付物
 > [交付文档文件夹](./deliverable/)
 - 需求规格说明书
+- [工艺流转卡.PDF下载](https://raw.githubusercontent.com/372410/32233/main/docs/工艺流转卡.pdf)
 - 车间业务流程图
 - 实施部署手册
 - 用户操作手册
@@ -43,7 +44,7 @@
 <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot2/customer_manage.png" width="300" alt="客户管理">
 
 
-[📄 工艺流转卡PDF](https://raw.githubusercontent.com/372410/32233/main/docs/工艺流转卡.pdf)
+
 
 
 
