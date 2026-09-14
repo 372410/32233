@@ -6,35 +6,33 @@
 <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/工业看板.png" width="720" alt="生产监控大屏">
 </p>
 
-## 移动端报工与质检应用
-面向现场操作人员提供移动端报工、工序检验、工单查看和个人报工记录功能，减少现场纸质单据，提升报工及时性与数据准确性。
-
 ### 移动端登录与首页
 支持账号密码登录，首页展示今日产量、合格率、设备 OEE、在制工单和待处理工单，现场人员可快速进入对应业务模块。
+
 <table align="center" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端_登录界面.png" width="350" alt="移动端登录界面">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端-登录界面.png" width="350" alt="移动端登录界面">
       <div>移动端登录</div>
     </td>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端_首页.png" width="350" alt="移动端首页">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端-首页.png" width="350" alt="移动端首页">
       <div>移动端首页</div>
     </td>
   </tr>
 </table>
 
-###  扫码报工与工单详情
+### 扫码报工与工单详情
 现场人员通过工单号或扫码进入报工页面，选择工序、录入完成数量和不良数量，提交后自动更新工单进度与工序状态。
 
 <table align="center" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/扫码报工.png" width="350" alt="扫码报工界面">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/扫码报工界面.png" width="350" alt="扫码报工界面">
       <div>扫码报工</div>
     </td>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/工单详情.png" width="350" alt="工单详情界面">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/工单详情界面.png" width="350" alt="工单详情界面">
       <div>工单详情</div>
     </td>
   </tr>
@@ -46,15 +44,16 @@
 <table align="center" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端_质量检验.png" width="350" alt="移动质检界面">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端-质量检验.png" width="350" alt="移动质检界面">
       <div>移动质检</div>
     </td>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端_我的.png" width="350" alt="移动端个人中心">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端-我的.png" width="350" alt="移动端个人中心">
       <div>个人中心</div>
     </td>
   </tr>
 </table>
+
 ## 一、首页数据概览
 系统总入口，集中展示生产、订单、设备等核心运营指标，支撑管理层快速掌握车间整体状态。
 
