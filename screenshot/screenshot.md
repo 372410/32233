@@ -242,13 +242,13 @@
 <p align="center">
 <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/质检项目.png" width="720" alt="检验项目列表">
 </p>
-
 ### 7.2 质检方案配置
 按业务场景配置质检方案，支持来料检、过程检、出货检等多种检验类型，灵活匹配不同工序的质检需求。
 
 <p align="center">
 <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/质检方案设置.png" width="720" alt="质检方案配置">
 </p>
+
 ## 八、质检记录与质量追溯模块
 记录各工序质检结果，支持按产品、工序、时间查询质检数据，形成从来料检、过程检到成品检的质量闭环追溯。
 
@@ -258,27 +258,17 @@
 <table align="center" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/来料检记录.png" width="350" alt="来料检记录">
-      <div>来料检记录</div>
-    </td>
-    <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/来料检.png" width="350" alt="来料检列表">
-      <div>来料检列表</div>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
       <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/过程检.png" width="350" alt="过程检列表">
       <div>过程检列表</div>
     </td>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/产品质量追溯界面.png" width="350" alt="产品质量追溯界面">
-      <div>产品质量追溯</div>
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/产品信息追朔.png" width="350" alt="产品信息追溯">
+      <div>产品信息追溯</div>
     </td>
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/产品追溯详情.png" width="350" alt="产品追溯详情">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/产品信息追朔展示.png" width="350" alt="产品追溯详情">
       <div>产品追溯详情</div>
     </td>
   </tr>
@@ -290,12 +280,12 @@
 <table align="center" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/批量质检统计.png" width="350" alt="批量质检统计">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/批量质检.png" width="350" alt="批量质检统计">
       <div>批量质检统计</div>
     </td>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/单项质检统计.png" width="350" alt="单项质检统计">
-      <div>单项质检统计</div>
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/单独质检.png" width="350" alt="单独质检统计">
+      <div>单独质检统计</div>
     </td>
   </tr>
 </table>
@@ -314,6 +304,43 @@
 对低于安全库存、临近有效期或超期物料进行预警提醒，支持按预警类型快速处理库存异常。
 
 <p align="center">
-<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/库存预警.png" width="720" alt="库存预警界面">
+<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/库春预警.png" width="720" alt="库存预警界面">
 </p>
 
+## 十、工艺数据采集模块
+针对涂装前处理、电泳等关键工序开展工艺参数采集与记录，自动生成标准化加料记录表，支持参数超标预警与数据导出打印，保障工艺稳定性与过程可追溯性。
+
+### 10.1 加料与数据采集
+按药剂分组记录工艺参数，展示标准范围与多时点采集数值，自动标注超标数据，支持三级签字确认与数据导出。
+
+<table align="center" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/数据采集.png" width="350" alt="工艺数据采集">
+      <div>工艺数据采集</div>
+    </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/加料数据记录.png" width="350" alt="加料数据记录">
+      <div>加料数据记录</div>
+    </td>
+  </tr>
+</table>
+
+## 十一、系统管理模块
+提供系统底层基础配置能力，包含组织架构维护、角色权限配置两大核心功能，支撑系统分级管控与数据安全访问。
+
+### 11.1 权限与组织管理
+维护企业部门组织架构，配置不同岗位角色的菜单权限与数据权限，实现多岗位差异化访问控制。
+
+<table align="center" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/角色管理.png" width="350" alt="角色管理">
+      <div>角色管理</div>
+    </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/部门管理.png" width="350" alt="部门管理">
+      <div>部门管理</div>
+    </td>
+  </tr>
+</table>
