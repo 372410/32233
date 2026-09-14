@@ -43,6 +43,7 @@
 <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot2/customer_manage.png" width="300" alt="客户管理">
 
 
+[📄 工艺流转卡PDF](https://raw.githubusercontent.com/372410/32233/main/docs/工艺流转卡.pdf)
 
 
 
