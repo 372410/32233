@@ -16,7 +16,7 @@
       <div>移动端登录</div>
     </td>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端-首页.png" width="350" alt="移动端首页">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端-首页.png" width="350" alt="移动-端首页">
       <div>移动端首页</div>
     </td>
   </tr>
@@ -28,11 +28,11 @@
 <table align="center" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/扫码报工界面.png" width="350" alt="扫码报工界面">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/报工界面.png" width="350" alt="扫码报工界面">
       <div>扫码报工</div>
     </td>
     <td align="center">
-      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/工单详情界面.png" width="350" alt="工单详情界面">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端报工设计.png" width="350" alt="工单详情界面">
       <div>工单详情</div>
     </td>
   </tr>
