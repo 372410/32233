@@ -11,7 +11,7 @@
     <td align="center">
       <a href="./1.MES系统实施蓝图.pdf">📥 下载：MES系统实施蓝图</a>
       <br><br>
-      <img src="../screenshot/1.系统实施蓝图.png" width="350" alt="MES系统实施蓝图预览">
+      <img src="../screenshot/1系统实施蓝图.png" width="350" alt="MES系统实施蓝图预览">
       <div>MES系统实施蓝图</div>
     </td>
     <td align="center">
