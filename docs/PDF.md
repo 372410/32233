@@ -1,5 +1,5 @@
 # 项目交付文档集
-> 所有文档均为脱敏演示版本，点击链接可下载完整PDF文件，下方为文档首页预览。
+> 所有文档均为脱敏演示版本，点击链接可下载完整PDF文件，下方为文档图片预览。
 > 
 > [← 返回项目首页](../README.md)
 
@@ -11,7 +11,7 @@
     <td align="center">
       <a href="./1.MES系统实施蓝图.pdf">📥 下载：MES系统实施蓝图</a>
       <br><br>
-      <img src="../screenshot/1系统实施蓝图.png" width="350" alt="MES系统实施蓝图预览">
+      <img src="../screenshot/1.系统实施蓝图.png" width="350" alt="MES系统实施蓝图预览">
       <div>MES系统实施蓝图</div>
     </td>
     <td align="center">
