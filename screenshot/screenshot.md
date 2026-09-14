@@ -31,9 +31,35 @@
 
 ---
 
-## 后续模块预留（待补充）
-- 客户管理模块
-- 生产订单模块
-- 消息通知模块
-- 系统登录入口
+## 二、产品管理模块
+覆盖产品基础信息全生命周期管理，包含产品档案、产品分类体系的增删改查与搜索筛选。
+
+### 2.1 产品管理主界面
+产品列表总览页，支持条件检索、新增/编辑/删除操作入口。
+
+<p align="center">
+<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/产品管理-产品管理.png" width="720" alt="产品管理主界面">
+</p>
+
+### 2.2 产品信息维护
+包含新增、编辑、详情查看三类操作页面，完整覆盖产品数据录入与修改场景。
+
+<table align="center" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/增加产品.png" width="350" alt="新增产品界面">
+      <div>新增产品界面</div>
+    </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/编辑产品.png" width="350" alt="编辑产品界面">
+      <div>编辑产品界面</div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/查看产品信息.png" width="350" alt="查看产品详情界面">
+      <div>查看产品详情界面</div>
+    </td>
+  </tr>
+</table>
 
