@@ -84,4 +84,3 @@
   <img src="../screenshot/工厂涂装业务ABC线.png" width="720" alt="工厂涂装业务ABC线流程图">
   <div>涂装车间全流程业务总图</div>
 </p>
-
