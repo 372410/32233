@@ -38,8 +38,6 @@
 
 > 涂装完整工艺说明见 [涂装工艺说明](涂装工艺说明.md)
 
-# 系统界面截图集
-
 ## ✨ 核心界面精选
 ### 生产监控大屏
 通过数字化监控中心集中展示涂装工厂的工序数据和物料流转，包含产量、合格率、设备状态、工单进度、工艺参数和质量趋势，为生产管理提供可视化决策支持。
@@ -48,7 +46,7 @@
 <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/工业看板.png" width="720" alt="生产监控大屏">
 </p>
 
-### 典型业务界面
+### 移动端业务界面
 <table align="center" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td align="center">
@@ -62,6 +60,10 @@
   </tr>
 </table>
 
+### web端业务界面
+<p align="center">
+<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/首页-数据概览.png" width="720" alt="首页数据概览界面">
+</p>
 ---
 
 
