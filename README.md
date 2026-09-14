@@ -38,12 +38,31 @@
 
 > 涂装完整工艺说明见 [涂装工艺说明](涂装工艺说明.md)
 
+# 系统界面截图集
 
-## 系统界面截图
-<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot2/customer_manage.png" width="300">
+## ✨ 核心界面精选
+### 生产监控大屏
+通过数字化监控中心集中展示产量、合格率、设备状态、工单进度、工艺参数和质量趋势，为生产管理提供可视化决策支持。
 
-## 系统界面截图2
-<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot2/customer_manage.png" width="300" alt="客户管理">
+<p align="center">
+<img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/工业看板.png" width="720" alt="生产监控大屏">
+</p>
+
+### 典型业务界面
+<table align="center" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/产品管理-产品管理.png" width="350" alt="产品管理主界面">
+      <div>Web端 · 产品管理</div>
+    </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/移动端-首页.png" width="350" alt="移动端首页">
+      <div>移动端 · 首页看板</div>
+    </td>
+  </tr>
+</table>
+
+---
 
 
 
