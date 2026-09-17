@@ -14,7 +14,8 @@
 
 
 ## 实现方式
-- 前端：HTML / JavaScript / CSS
+- 前端：HTML / JavaScript / CSS<img width="1680" height="1930" alt="MES系统流程图" src="https://github.com/user-attachments/assets/581327f8-d666-4a25-bc92-06cd961172ff" />
+
 - 图表：ECharts
 
 ## Web端功能模块图
@@ -30,6 +31,600 @@
 
 ![MES 系统业务流程图](./docs/MES系统流程图.svg)
 
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1930" viewBox="0 0 1680 1930" font-family="'PingFang SC','Microsoft YaHei','Noto Sans CJK SC','Source Han Sans SC','Segoe UI',sans-serif">
+  <defs>
+    <linearGradient id="topGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="20%" stop-color="#2563EB"/>
+      <stop offset="40%" stop-color="#0891B2"/>
+      <stop offset="60%" stop-color="#16A34A"/>
+      <stop offset="80%" stop-color="#CA8A04"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <filter id="ds" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+    <marker id="mG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#94A3B8"/></marker>
+    <marker id="mPu" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#7C3AED"/></marker>
+    <marker id="mBl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#2563EB"/></marker>
+    <marker id="mCy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#0891B2"/></marker>
+    <marker id="mIn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#4F46E5"/></marker>
+    <marker id="mOr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#EA580C"/></marker>
+    <marker id="mAm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#D97706"/></marker>
+    <marker id="mYe" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#CA8A04"/></marker>
+    <marker id="mGr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#16A34A"/></marker>
+    <marker id="mTe" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#0D9488"/></marker>
+    <style>
+      text { font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC','Source Han Sans SC','Segoe UI',sans-serif; }
+      .tMain { font-size:30px; font-weight:700; fill:#0F172A; }
+      .tSub { font-size:13px; fill:#64748B; }
+      .tPill { font-size:11px; fill:#475569; }
+      .tLbl { font-size:13px; font-weight:700; fill:#FFFFFF; }
+      .tHint { font-size:11px; fill:#94A3B8; }
+      .tDom { font-size:15px; font-weight:700; }
+      .tTag { font-size:11px; fill:#94A3B8; }
+      .tStep { font-size:12px; font-weight:700; fill:#1E293B; }
+      .tDesc { font-size:10px; fill:#64748B; }
+      .tNote { font-size:10.5px; fill:#94A3B8; }
+      .tCard { font-size:15px; font-weight:700; }
+      .tC1 { font-size:11.5px; fill:#475569; }
+      .tC2 { font-size:10.5px; fill:#94A3B8; }
+      .tChain { font-size:14px; font-weight:700; }
+      .tCap { font-size:11px; fill:#475569; }
+      .tNum { font-size:11px; font-weight:700; }
+      .tSn { font-size:10px; font-weight:700; fill:#FFFFFF; }
+      .tLg { font-size:11px; fill:#475569; }
+      .tLgT { font-size:13px; font-weight:700; fill:#334155; }
+    </style>
+  </defs>
+
+  <!-- ==================== 背景 ==================== -->
+  <rect x="0" y="0" width="1680" height="1930" fill="#F1F5F9"/>
+  <rect x="0" y="0" width="1680" height="8" fill="url(#topGrad)"/>
+
+  <!-- ==================== 标题区 ==================== -->
+  <text x="840" y="58" text-anchor="middle" class="tMain">涂装行业 MES 系统 · 业务流程全景图</text>
+  <text x="840" y="88" text-anchor="middle" class="tSub">基础数据初始化 ▸ 生产订单执行 ▸ 设备过程管控 ▸ 质量检验闭环 ▸ 库存经营统计</text>
+  <g filter="url(#ds)">
+    <rect x="649" y="102" width="100" height="26" rx="13" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="765" y="102" width="120" height="26" rx="13" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="901" y="102" width="130" height="26" rx="13" fill="#FFFFFF" stroke="#E2E8F0"/>
+  </g>
+  <text x="699" y="119" text-anchor="middle" class="tPill">🏭 12 大模块</text>
+  <text x="825" y="119" text-anchor="middle" class="tPill">📄 40+ 功能页面</text>
+  <text x="966" y="119" text-anchor="middle" class="tPill">🔄 6 大业务阶段</text>
+
+  <!-- ==================== L0 系统准入 ==================== -->
+  <rect x="60" y="148" width="150" height="28" rx="14" fill="#334155"/>
+  <text x="76" y="167" class="tLbl">STEP 1 · 系统准入</text>
+  <line x1="226" y1="162" x2="1620" y2="162" stroke="#CBD5E1" stroke-dasharray="4 4"/>
+  <text x="1620" y="167" text-anchor="end" class="tHint">登录后进入首页看板</text>
+
+  <!-- 登录认证 -->
+  <g filter="url(#ds)">
+    <rect x="75" y="188" width="230" height="70" rx="12" fill="#FFFFFF" stroke="#CBD5E1"/>
+  </g>
+  <path d="M 75 200 A 12 12 0 0 1 87 188 H 293 A 12 12 0 0 1 305 200 Z" fill="#334155"/>
+  <text x="95" y="230" font-size="20">🔐</text>
+  <text x="125" y="222" font-size="14" font-weight="700" fill="#334155">登录认证</text>
+  <text x="125" y="243" class="tDesc">账号密码 · 权限校验</text>
+  <line x1="307" y1="223" x2="340" y2="223" stroke="#64748B" stroke-width="2" marker-end="url(#mG)"/>
+
+  <!-- 首页 -->
+  <g filter="url(#ds)">
+    <rect x="345" y="188" width="230" height="70" rx="12" fill="#FFFFFF" stroke="#CBD5E1"/>
+  </g>
+  <path d="M 345 200 A 12 12 0 0 1 357 188 H 563 A 12 12 0 0 1 575 200 Z" fill="#334155"/>
+  <text x="365" y="230" font-size="20">🏠</text>
+  <text x="395" y="222" font-size="14" font-weight="700" fill="#334155">首页 · 数据概览</text>
+  <text x="395" y="243" class="tDesc">生产看板 · 实时监控</text>
+
+  <!-- 消息通知 -->
+  <g filter="url(#ds)">
+    <rect x="605" y="188" width="210" height="70" rx="12" fill="#FFFFFF" stroke="#CBD5E1"/>
+  </g>
+  <path d="M 605 200 A 12 12 0 0 1 617 188 H 803 A 12 12 0 0 1 815 200 Z" fill="#334155"/>
+  <text x="625" y="230" font-size="20">🔔</text>
+  <text x="655" y="222" font-size="14" font-weight="700" fill="#334155">消息通知</text>
+  <text x="655" y="243" class="tDesc">待办 · 预警提醒</text>
+
+  <!-- 总则说明卡 -->
+  <g filter="url(#ds)">
+    <rect x="850" y="188" width="770" height="70" rx="12" fill="#FFFFFF" stroke="#CBD5E1"/>
+  </g>
+  <path d="M 850 200 A 12 12 0 0 1 862 188 H 1608 A 12 12 0 0 1 1620 200 Z" fill="#334155"/>
+  <text x="875" y="231" font-size="20">💡</text>
+  <text x="905" y="216" font-size="12.5" font-weight="700" fill="#0F172A">系统使用总则：先配置基础数据，后开展业务流程</text>
+  <text x="905" y="241" class="tDesc">各模块存在数据依赖 —— 添加产品前先建「产品类型」；添加员工前先建「部门与角色」；创建订单前先备齐「客户 · 产线 · 产品 · 工艺路线」</text>
+  <text x="840" y="272" text-anchor="middle" font-size="12" fill="#94A3B8">▼</text>
+
+  <!-- ==================== L1 基础数据初始化 ==================== -->
+  <rect x="60" y="276" width="200" height="28" rx="14" fill="#7C3AED"/>
+  <text x="76" y="295" class="tLbl">STEP 2 · 基础数据初始化</text>
+  <line x1="276" y1="290" x2="1620" y2="290" stroke="#CBD5E1" stroke-dasharray="4 4"/>
+  <text x="1620" y="295" text-anchor="end" class="tHint">按依赖顺序完成配置 · 决定后续业务可用性</text>
+
+  <!-- ============ Row1 ============ -->
+  <!-- 系统管理域（紫） -->
+  <g filter="url(#ds)">
+    <rect x="60" y="316" width="400" height="175" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
+  </g>
+  <path d="M 60 328 A 12 12 0 0 1 72 316 H 448 A 12 12 0 0 1 460 328 Z" fill="#7C3AED"/>
+  <text x="78" y="348" class="tDom" fill="#6D28D9">👥 系统管理</text>
+  <text x="442" y="348" text-anchor="end" class="tTag">权限体系</text>
+  <rect x="78" y="366" width="108" height="55" rx="8" fill="#F5F3FF" stroke="#DDD6FE"/>
+  <circle cx="93" cy="381" r="8.5" fill="#7C3AED"/><text x="93" y="385" text-anchor="middle" class="tSn">1</text>
+  <text x="105" y="385" class="tStep">部门管理</text>
+  <text x="90" y="408" class="tDesc">组织架构</text>
+  <line x1="188" y1="393" x2="201" y2="393" stroke="#7C3AED" stroke-width="2" marker-end="url(#mPu)"/>
+  <rect x="204" y="366" width="108" height="55" rx="8" fill="#F5F3FF" stroke="#DDD6FE"/>
+  <circle cx="219" cy="381" r="8.5" fill="#7C3AED"/><text x="219" y="385" text-anchor="middle" class="tSn">2</text>
+  <text x="231" y="385" class="tStep">角色管理</text>
+  <text x="216" y="408" class="tDesc">勾选权限</text>
+  <line x1="314" y1="393" x2="327" y2="393" stroke="#7C3AED" stroke-width="2" marker-end="url(#mPu)"/>
+  <rect x="330" y="366" width="108" height="55" rx="8" fill="#F5F3FF" stroke="#DDD6FE"/>
+  <circle cx="345" cy="381" r="8.5" fill="#7C3AED"/><text x="345" y="385" text-anchor="middle" class="tSn">3</text>
+  <text x="357" y="385" class="tStep">员工管理</text>
+  <text x="342" y="408" class="tDesc">选择角色</text>
+  <text x="78" y="458" class="tNote">📋 操作日志 —— 全操作自动留痕，支持审计追溯</text>
+
+  <!-- 产品管理域（蓝） -->
+  <g filter="url(#ds)">
+    <rect x="490" y="316" width="400" height="175" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
+  </g>
+  <path d="M 490 328 A 12 12 0 0 1 502 316 H 878 A 12 12 0 0 1 890 328 Z" fill="#2563EB"/>
+  <text x="508" y="348" class="tDom" fill="#1D4ED8">📦 产品管理</text>
+  <text x="872" y="348" text-anchor="end" class="tTag">主数据</text>
+  <rect x="508" y="366" width="108" height="55" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <circle cx="523" cy="381" r="8.5" fill="#2563EB"/><text x="523" y="385" text-anchor="middle" class="tSn">1</text>
+  <text x="535" y="385" class="tStep">产品类型</text>
+  <text x="520" y="408" class="tDesc">分类定义</text>
+  <line x1="618" y1="393" x2="631" y2="393" stroke="#2563EB" stroke-width="2" marker-end="url(#mBl)"/>
+  <rect x="634" y="366" width="108" height="55" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <circle cx="649" cy="381" r="8.5" fill="#2563EB"/><text x="649" y="385" text-anchor="middle" class="tSn">2</text>
+  <text x="661" y="385" class="tStep">产品管理</text>
+  <text x="646" y="408" class="tDesc">选择类型</text>
+  <line x1="744" y1="393" x2="757" y2="393" stroke="#2563EB" stroke-width="2" marker-end="url(#mBl)"/>
+  <rect x="760" y="366" width="108" height="55" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <circle cx="775" cy="381" r="8.5" fill="#2563EB"/><text x="775" y="385" text-anchor="middle" class="tSn">3</text>
+  <text x="787" y="385" class="tStep">客户管理</text>
+  <text x="772" y="408" class="tDesc">客户档案</text>
+  <text x="508" y="458" class="tNote">💡 添加产品时必须先选择所属「产品类型」</text>
+
+  <!-- 工序管理域（青） -->
+  <g filter="url(#ds)">
+    <rect x="920" y="316" width="700" height="175" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
+  </g>
+  <path d="M 920 328 A 12 12 0 0 1 932 316 H 1608 A 12 12 0 0 1 1620 328 Z" fill="#0891B2"/>
+  <text x="938" y="348" class="tDom" fill="#0E7490">🔧 工序管理</text>
+  <text x="1602" y="348" text-anchor="end" class="tTag">工艺体系</text>
+  <rect x="938" y="366" width="140" height="55" rx="8" fill="#ECFEFF" stroke="#A5F3FC"/>
+  <circle cx="953" cy="381" r="8.5" fill="#0891B2"/><text x="953" y="385" text-anchor="middle" class="tSn">1</text>
+  <text x="965" y="385" class="tStep">工序类型</text>
+  <text x="950" y="408" class="tDesc">分类定义</text>
+  <line x1="1082" y1="393" x2="1099" y2="393" stroke="#0891B2" stroke-width="2" marker-end="url(#mCy)"/>
+  <rect x="1106" y="366" width="140" height="55" rx="8" fill="#ECFEFF" stroke="#A5F3FC"/>
+  <circle cx="1121" cy="381" r="8.5" fill="#0891B2"/><text x="1121" y="385" text-anchor="middle" class="tSn">2</text>
+  <text x="1133" y="385" class="tStep">工序列表</text>
+  <text x="1118" y="408" class="tDesc">添加具体工序</text>
+  <line x1="1250" y1="393" x2="1267" y2="393" stroke="#0891B2" stroke-width="2" marker-end="url(#mCy)"/>
+  <rect x="1274" y="366" width="140" height="55" rx="8" fill="#ECFEFF" stroke="#A5F3FC"/>
+  <circle cx="1289" cy="381" r="8.5" fill="#0891B2"/><text x="1289" y="385" text-anchor="middle" class="tSn">3</text>
+  <text x="1301" y="385" class="tStep">工艺路线类型</text>
+  <text x="1286" y="408" class="tDesc">路线分类</text>
+  <line x1="1416" y1="393" x2="1429" y2="393" stroke="#0891B2" stroke-width="2" marker-end="url(#mCy)"/>
+  <rect x="1442" y="366" width="140" height="55" rx="8" fill="#ECFEFF" stroke="#A5F3FC"/>
+  <circle cx="1457" cy="381" r="8.5" fill="#0891B2"/><text x="1457" y="385" text-anchor="middle" class="tSn">4</text>
+  <text x="1469" y="385" class="tStep">工艺路线</text>
+  <text x="1454" y="408" class="tDesc">编排工序顺序</text>
+  <text x="938" y="458" class="tNote">⚠️ 不良原因 —— 质检不良归因定义（质检模块引用）</text>
+
+  <!-- ============ Row2 ============ -->
+  <!-- 设备管理域（橙） -->
+  <g filter="url(#ds)">
+    <rect x="60" y="507" width="350" height="175" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
+  </g>
+  <path d="M 60 519 A 12 12 0 0 1 72 507 H 398 A 12 12 0 0 1 410 519 Z" fill="#EA580C"/>
+  <text x="78" y="539" class="tDom" fill="#C2410C">⚙️ 设备管理</text>
+  <text x="392" y="539" text-anchor="end" class="tTag">设备台账</text>
+  <rect x="78" y="557" width="140" height="55" rx="8" fill="#FFF7ED" stroke="#FED7AA"/>
+  <circle cx="93" cy="572" r="8.5" fill="#EA580C"/><text x="93" y="576" text-anchor="middle" class="tSn">1</text>
+  <text x="105" y="576" class="tStep">维修类型</text>
+  <text x="90" y="599" class="tDesc">故障分类</text>
+  <line x1="220" y1="584" x2="233" y2="584" stroke="#EA580C" stroke-width="2" marker-end="url(#mOr)"/>
+  <rect x="246" y="557" width="140" height="55" rx="8" fill="#FFF7ED" stroke="#FED7AA"/>
+  <circle cx="261" cy="572" r="8.5" fill="#EA580C"/><text x="261" y="576" text-anchor="middle" class="tSn">2</text>
+  <text x="273" y="576" class="tStep">设备列表</text>
+  <text x="258" y="599" class="tDesc">选择产线</text>
+  <text x="78" y="649" class="tNote">💡 添加设备时必须选择所属「生产线」</text>
+
+  <!-- 保养点检基础域（琥珀） -->
+  <g filter="url(#ds)">
+    <rect x="440" y="507" width="380" height="175" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
+  </g>
+  <path d="M 440 519 A 12 12 0 0 1 452 507 H 808 A 12 12 0 0 1 820 519 Z" fill="#D97706"/>
+  <text x="458" y="539" class="tDom" fill="#B45309">🛠️ 保养点检基础</text>
+  <text x="802" y="539" text-anchor="end" class="tTag">维护标准</text>
+  <rect x="458" y="557" width="160" height="55" rx="8" fill="#FFFBEB" stroke="#FDE68A"/>
+  <circle cx="473" cy="572" r="8.5" fill="#D97706"/><text x="473" y="576" text-anchor="middle" class="tSn">1</text>
+  <text x="485" y="576" class="tStep">保养项目</text>
+  <text x="470" y="599" class="tDesc">保养内容条目</text>
+  <text x="631" y="592" text-anchor="middle" font-size="18" font-weight="700" fill="#D97706">+</text>
+  <rect x="644" y="557" width="160" height="55" rx="8" fill="#FFFBEB" stroke="#FDE68A"/>
+  <circle cx="659" cy="572" r="8.5" fill="#D97706"/><text x="659" y="576" text-anchor="middle" class="tSn">1</text>
+  <text x="671" y="576" class="tStep">点检项目</text>
+  <text x="656" y="599" class="tDesc">点检内容条目</text>
+  <text x="458" y="649" class="tNote">💡 项目是保养 / 点检计划的组成单元，先定义后引用</text>
+
+  <!-- 质检设置域（绿） -->
+  <g filter="url(#ds)">
+    <rect x="850" y="507" width="410" height="175" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
+  </g>
+  <path d="M 850 519 A 12 12 0 0 1 862 507 H 1248 A 12 12 0 0 1 1260 519 Z" fill="#16A34A"/>
+  <text x="868" y="539" class="tDom" fill="#15803D">✅ 质检设置</text>
+  <text x="1242" y="539" text-anchor="end" class="tTag">检验标准</text>
+  <rect x="868" y="557" width="175" height="55" rx="8" fill="#F0FDF4" stroke="#BBF7D0"/>
+  <circle cx="883" cy="572" r="8.5" fill="#16A34A"/><text x="883" y="576" text-anchor="middle" class="tSn">1</text>
+  <text x="895" y="576" class="tStep">检验项目</text>
+  <text x="880" y="599" class="tDesc">检测项定义</text>
+  <line x1="1045" y1="584" x2="1058" y2="584" stroke="#16A34A" stroke-width="2" marker-end="url(#mGr)"/>
+  <rect x="1073" y="557" width="175" height="55" rx="8" fill="#F0FDF4" stroke="#BBF7D0"/>
+  <circle cx="1088" cy="572" r="8.5" fill="#16A34A"/><text x="1088" y="576" text-anchor="middle" class="tSn">2</text>
+  <text x="1100" y="576" class="tStep">质检方案</text>
+  <text x="1085" y="599" class="tDesc">选项目 · 定次序</text>
+  <text x="868" y="649" class="tNote">💡 质检方案确定检测哪些项目及检测次序</text>
+
+  <!-- 运营基础数据域（灰） -->
+  <g filter="url(#ds)">
+    <rect x="1290" y="507" width="330" height="175" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
+  </g>
+  <path d="M 1290 519 A 12 12 0 0 1 1302 507 H 1608 A 12 12 0 0 1 1620 519 Z" fill="#64748B"/>
+  <text x="1308" y="539" class="tDom" fill="#475569">🏭 运营基础数据</text>
+  <text x="1602" y="539" text-anchor="end" class="tTag">支撑配置</text>
+  <rect x="1300" y="557" width="98" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <circle cx="1313" cy="572" r="7.5" fill="#64748B"/><text x="1313" y="575.5" text-anchor="middle" class="tSn">1</text>
+  <text x="1323" y="576" class="tStep" font-size="11.5">生产线</text>
+  <text x="1308" y="599" class="tDesc">产能定义</text>
+  <rect x="1406" y="557" width="98" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <circle cx="1419" cy="572" r="7.5" fill="#64748B"/><text x="1419" y="575.5" text-anchor="middle" class="tSn">2</text>
+  <text x="1429" y="576" class="tStep" font-size="11.5">数据分组</text>
+  <text x="1414" y="599" class="tDesc">采集分组</text>
+  <rect x="1512" y="557" width="98" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <circle cx="1525" cy="572" r="7.5" fill="#64748B"/><text x="1525" y="575.5" text-anchor="middle" class="tSn">3</text>
+  <text x="1535" y="576" class="tStep" font-size="11.5">费用设置</text>
+  <text x="1520" y="599" class="tDesc">能耗单价</text>
+  <text x="1308" y="649" class="tNote">💡 初始能耗 · 数据管理 需同步初始化</text>
+
+  <!-- L1→L2 胶囊 -->
+  <rect x="760" y="690" width="160" height="26" rx="13" fill="#E2E8F0"/>
+  <text x="840" y="707" text-anchor="middle" class="tCap">基础数据就绪 ▼</text>
+
+  <!-- ==================== L2 核心生产执行 ==================== -->
+  <rect x="60" y="718" width="195" height="28" rx="14" fill="#4F46E5"/>
+  <text x="76" y="737" class="tLbl">STEP 3 · 核心生产执行</text>
+  <line x1="271" y1="732" x2="1620" y2="732" stroke="#CBD5E1" stroke-dasharray="4 4"/>
+  <text x="1620" y="737" text-anchor="end" class="tHint">主业务流：订单 → 工艺 → 任务 → 报工</text>
+
+  <!-- 卡1 创建生产订单 -->
+  <g filter="url(#ds)">
+    <rect x="75" y="758" width="225" height="110" rx="12" fill="#FFFFFF" stroke="#C7D2FE" stroke-width="1.5"/>
+  </g>
+  <path d="M 75 770 A 12 12 0 0 1 87 758 H 288 A 12 12 0 0 1 300 770 Z" fill="#4F46E5"/>
+  <rect x="262" y="769" width="26" height="18" rx="9" fill="#EEF2FF"/>
+  <text x="275" y="782" text-anchor="middle" class="tNum" fill="#4F46E5">1</text>
+  <text x="187" y="808" text-anchor="middle" class="tCard" fill="#3730A3">📋 创建生产订单</text>
+  <text x="187" y="832" text-anchor="middle" class="tC1">需选择：客户 · 产线 · 产品</text>
+  <text x="187" y="851" text-anchor="middle" class="tC2">三要素齐备方可创建</text>
+  <line x1="304" y1="813" x2="326" y2="813" stroke="#4F46E5" stroke-width="2.5" marker-end="url(#mIn)"/>
+
+  <!-- 卡2 设置工艺路线 -->
+  <g filter="url(#ds)">
+    <rect x="330" y="758" width="225" height="110" rx="12" fill="#FFFFFF" stroke="#C7D2FE" stroke-width="1.5"/>
+  </g>
+  <path d="M 330 770 A 12 12 0 0 1 342 758 H 543 A 12 12 0 0 1 555 770 Z" fill="#4F46E5"/>
+  <rect x="517" y="769" width="26" height="18" rx="9" fill="#EEF2FF"/>
+  <text x="530" y="782" text-anchor="middle" class="tNum" fill="#4F46E5">2</text>
+  <text x="442" y="808" text-anchor="middle" class="tCard" fill="#3730A3">🔀 设置工艺路线</text>
+  <text x="442" y="832" text-anchor="middle" class="tC1">从工艺路线库中选择</text>
+  <text x="442" y="851" text-anchor="middle" class="tC2">匹配产品涂装工艺</text>
+  <line x1="559" y1="813" x2="581" y2="813" stroke="#4F46E5" stroke-width="2.5" marker-end="url(#mIn)"/>
+
+  <!-- 卡3 下发任务 -->
+  <g filter="url(#ds)">
+    <rect x="585" y="758" width="225" height="110" rx="12" fill="#FFFFFF" stroke="#C7D2FE" stroke-width="1.5"/>
+  </g>
+  <path d="M 585 770 A 12 12 0 0 1 597 758 H 798 A 12 12 0 0 1 810 770 Z" fill="#4F46E5"/>
+  <rect x="772" y="769" width="26" height="18" rx="9" fill="#EEF2FF"/>
+  <text x="785" y="782" text-anchor="middle" class="tNum" fill="#4F46E5">3</text>
+  <text x="697" y="808" text-anchor="middle" class="tCard" fill="#3730A3">📤 下发任务</text>
+  <text x="697" y="832" text-anchor="middle" class="tC1">确认后下发至产线</text>
+  <text x="697" y="851" text-anchor="middle" class="tC2">可撤回 · 可追加</text>
+  <line x1="814" y1="813" x2="836" y2="813" stroke="#4F46E5" stroke-width="2.5" marker-end="url(#mIn)"/>
+
+  <!-- 卡4 生产任务 -->
+  <g filter="url(#ds)">
+    <rect x="840" y="758" width="225" height="110" rx="12" fill="#FFFFFF" stroke="#C7D2FE" stroke-width="1.5"/>
+  </g>
+  <path d="M 840 770 A 12 12 0 0 1 852 758 H 1053 A 12 12 0 0 1 1065 770 Z" fill="#4F46E5"/>
+  <rect x="1027" y="769" width="26" height="18" rx="9" fill="#EEF2FF"/>
+  <text x="1040" y="782" text-anchor="middle" class="tNum" fill="#4F46E5">4</text>
+  <text x="952" y="808" text-anchor="middle" class="tCard" fill="#3730A3">🧾 生产任务</text>
+  <text x="952" y="832" text-anchor="middle" class="tC1">下发后任务列表呈现</text>
+  <text x="952" y="851" text-anchor="middle" class="tC2">产线按任务执行 · 跟踪进度</text>
+  <line x1="1069" y1="813" x2="1091" y2="813" stroke="#4F46E5" stroke-width="2.5" marker-end="url(#mIn)"/>
+
+  <!-- 卡5 报工执行 -->
+  <g filter="url(#ds)">
+    <rect x="1095" y="758" width="225" height="110" rx="12" fill="#FFFFFF" stroke="#C7D2FE" stroke-width="1.5"/>
+  </g>
+  <path d="M 1095 770 A 12 12 0 0 1 1107 758 H 1308 A 12 12 0 0 1 1320 770 Z" fill="#4F46E5"/>
+  <rect x="1282" y="769" width="26" height="18" rx="9" fill="#EEF2FF"/>
+  <text x="1295" y="782" text-anchor="middle" class="tNum" fill="#4F46E5">5</text>
+  <text x="1207" y="808" text-anchor="middle" class="tCard" fill="#3730A3">📱 报工执行</text>
+  <text x="1207" y="832" text-anchor="middle" class="tC1">报工工作台 · 扫码报工</text>
+  <text x="1207" y="851" text-anchor="middle" class="tC2">工序完成数据采集</text>
+  <line x1="1324" y1="813" x2="1346" y2="813" stroke="#4F46E5" stroke-width="2.5" marker-end="url(#mIn)"/>
+
+  <!-- 卡6 报工记录 -->
+  <g filter="url(#ds)">
+    <rect x="1350" y="758" width="225" height="110" rx="12" fill="#FFFFFF" stroke="#C7D2FE" stroke-width="1.5"/>
+  </g>
+  <path d="M 1350 770 A 12 12 0 0 1 1362 758 H 1563 A 12 12 0 0 1 1575 770 Z" fill="#4F46E5"/>
+  <rect x="1537" y="769" width="26" height="18" rx="9" fill="#EEF2FF"/>
+  <text x="1550" y="782" text-anchor="middle" class="tNum" fill="#4F46E5">6</text>
+  <text x="1462" y="808" text-anchor="middle" class="tCard" fill="#3730A3">🗂️ 报工记录</text>
+  <text x="1462" y="832" text-anchor="middle" class="tC1">报工参数 · 记录归档</text>
+  <text x="1462" y="851" text-anchor="middle" class="tC2">产量与工时统计</text>
+
+  <!-- 依赖说明框 -->
+  <rect x="75" y="884" width="1500" height="40" rx="20" fill="#EEF2FF" stroke="#C7D2FE" stroke-dasharray="5 4"/>
+  <text x="825" y="909" text-anchor="middle" font-size="11.5" fill="#4338CA">🔗 前置依赖 —— 客户管理 · 产品管理 · 生产线 · 工艺路线（工序类型 → 工序 → 路线）均来自「基础数据初始化层」，就绪后方可创建订单</text>
+
+  <!-- L2→L3 胶囊 -->
+  <rect x="750" y="942" width="180" height="26" rx="13" fill="#E2E8F0"/>
+  <text x="840" y="959" text-anchor="middle" class="tCap">生产全程 · 并行管控 ▼</text>
+
+  <!-- ==================== L3 设备过程管控 ==================== -->
+  <rect x="60" y="986" width="185" height="28" rx="14" fill="#EA580C"/>
+  <text x="76" y="1005" class="tLbl">STEP 4 · 设备过程管控</text>
+  <line x1="261" y1="1000" x2="1620" y2="1000" stroke="#CBD5E1" stroke-dasharray="4 4"/>
+  <text x="1620" y="1005" text-anchor="end" class="tHint">异常报修 + 计划性保养点检</text>
+
+  <!-- 链1 设备报修（橙） -->
+  <g filter="url(#ds)">
+    <rect x="60" y="1026" width="500" height="165" rx="14" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1.5"/>
+  </g>
+  <path d="M 60 1038 A 12 12 0 0 1 72 1026 H 548 A 12 12 0 0 1 560 1038 Z" fill="#EA580C"/>
+  <text x="78" y="1058" class="tChain" fill="#C2410C">🛠️ 设备报修流程</text>
+  <text x="542" y="1058" text-anchor="end" class="tTag">异常驱动</text>
+  <rect x="78" y="1074" width="200" height="58" rx="8" fill="#FFFFFF" stroke="#FED7AA"/>
+  <circle cx="94" cy="1090" r="9" fill="#EA580C"/><text x="94" y="1094" text-anchor="middle" class="tSn">1</text>
+  <text x="110" y="1094" font-size="13" font-weight="700" fill="#1E293B">设备报修</text>
+  <text x="94" y="1118" class="tDesc">选：报修类型 · 设备</text>
+  <line x1="282" y1="1103" x2="324" y2="1103" stroke="#EA580C" stroke-width="2" marker-end="url(#mOr)"/>
+  <rect x="328" y="1074" width="200" height="58" rx="8" fill="#FFFFFF" stroke="#FED7AA"/>
+  <circle cx="344" cy="1090" r="9" fill="#EA580C"/><text x="344" y="1094" text-anchor="middle" class="tSn">2</text>
+  <text x="360" y="1094" font-size="13" font-weight="700" fill="#1E293B">维修闭环</text>
+  <text x="344" y="1118" class="tDesc">受理 · 维修 · 验收</text>
+  <text x="78" y="1160" class="tNote">🔗 依赖：维修类型 + 设备列表（基础数据层）</text>
+  <text x="542" y="1160" text-anchor="end" class="tNote">报修记录全程可追溯</text>
+
+  <!-- 链2 保养执行（琥珀） -->
+  <g filter="url(#ds)">
+    <rect x="590" y="1026" width="500" height="165" rx="14" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1.5"/>
+  </g>
+  <path d="M 590 1038 A 12 12 0 0 1 602 1026 H 1078 A 12 12 0 0 1 1090 1038 Z" fill="#D97706"/>
+  <text x="608" y="1058" class="tChain" fill="#B45309">🗓️ 保养执行流程</text>
+  <text x="1072" y="1058" text-anchor="end" class="tTag">计划驱动</text>
+  <rect x="608" y="1074" width="200" height="58" rx="8" fill="#FFFFFF" stroke="#FDE68A"/>
+  <circle cx="624" cy="1090" r="9" fill="#D97706"/><text x="624" y="1094" text-anchor="middle" class="tSn">1</text>
+  <text x="640" y="1094" font-size="13" font-weight="700" fill="#1E293B">保养计划</text>
+  <text x="624" y="1118" class="tDesc">选：保养项目 · 设备 · 周期</text>
+  <line x1="812" y1="1103" x2="854" y2="1103" stroke="#D97706" stroke-width="2" marker-end="url(#mAm)"/>
+  <rect x="858" y="1074" width="200" height="58" rx="8" fill="#FFFFFF" stroke="#FDE68A"/>
+  <circle cx="874" cy="1090" r="9" fill="#D97706"/><text x="874" y="1094" text-anchor="middle" class="tSn">2</text>
+  <text x="890" y="1094" font-size="13" font-weight="700" fill="#1E293B">任务处理</text>
+  <text x="874" y="1118" class="tDesc">计划生成 · 执行记录</text>
+  <text x="608" y="1160" class="tNote">🔗 依赖：保养项目 + 设备列表（基础数据层）</text>
+  <text x="1072" y="1160" text-anchor="end" class="tNote">按周期自动生成任务</text>
+
+  <!-- 链3 点检执行（黄） -->
+  <g filter="url(#ds)">
+    <rect x="1120" y="1026" width="500" height="165" rx="14" fill="#FEFCE8" stroke="#FEF08A" stroke-width="1.5"/>
+  </g>
+  <path d="M 1120 1038 A 12 12 0 0 1 1132 1026 H 1608 A 12 12 0 0 1 1620 1038 Z" fill="#CA8A04"/>
+  <text x="1138" y="1058" class="tChain" fill="#A16207">🔍 点检执行流程</text>
+  <text x="1602" y="1058" text-anchor="end" class="tTag">日常巡检</text>
+  <rect x="1138" y="1074" width="200" height="58" rx="8" fill="#FFFFFF" stroke="#FEF08A"/>
+  <circle cx="1154" cy="1090" r="9" fill="#CA8A04"/><text x="1154" y="1094" text-anchor="middle" class="tSn">1</text>
+  <text x="1170" y="1094" font-size="13" font-weight="700" fill="#1E293B">点检计划</text>
+  <text x="1154" y="1118" class="tDesc">选：点检项目 · 设备 · 周期</text>
+  <line x1="1342" y1="1103" x2="1384" y2="1103" stroke="#CA8A04" stroke-width="2" marker-end="url(#mYe)"/>
+  <rect x="1388" y="1074" width="200" height="58" rx="8" fill="#FFFFFF" stroke="#FEF08A"/>
+  <circle cx="1404" cy="1090" r="9" fill="#CA8A04"/><text x="1404" y="1094" text-anchor="middle" class="tSn">2</text>
+  <text x="1420" y="1094" font-size="13" font-weight="700" fill="#1E293B">任务处理</text>
+  <text x="1404" y="1118" class="tDesc">日常点检 · 记录留痕</text>
+  <text x="1138" y="1160" class="tNote">🔗 依赖：点检项目 + 设备列表（基础数据层）</text>
+  <text x="1602" y="1160" text-anchor="end" class="tNote">按班次 / 日执行</text>
+
+  <!-- L3→L4 胶囊 -->
+  <rect x="760" y="1206" width="160" height="26" rx="13" fill="#E2E8F0"/>
+  <text x="840" y="1223" text-anchor="middle" class="tCap">全程质量管控 ▼</text>
+
+  <!-- ==================== L4 质量检验闭环 ==================== -->
+  <rect x="60" y="1246" width="185" height="28" rx="14" fill="#16A34A"/>
+  <text x="76" y="1265" class="tLbl">STEP 5 · 质量检验闭环</text>
+  <line x1="261" y1="1260" x2="1620" y2="1260" stroke="#CBD5E1" stroke-dasharray="4 4"/>
+  <text x="1620" y="1265" text-anchor="end" class="tHint">检验标准由「质检设置」定义 · 四类检验贯穿全程</text>
+
+  <!-- 来料检 -->
+  <g filter="url(#ds)">
+    <rect x="75" y="1286" width="340" height="110" rx="12" fill="#FFFFFF" stroke="#BBF7D0" stroke-width="1.5"/>
+  </g>
+  <path d="M 75 1298 A 12 12 0 0 1 87 1286 H 403 A 12 12 0 0 1 415 1298 Z" fill="#16A34A"/>
+  <rect x="377" y="1297" width="26" height="18" rx="9" fill="#F0FDF4"/>
+  <text x="390" y="1310" text-anchor="middle" class="tNum" fill="#16A34A">1</text>
+  <text x="245" y="1336" text-anchor="middle" class="tCard" fill="#166534">🚚 来料检</text>
+  <text x="245" y="1360" text-anchor="middle" class="tC1">原材料入厂 · 质量把关</text>
+  <text x="245" y="1379" text-anchor="middle" class="tC2">触发：原料到货入库前</text>
+  <line x1="419" y1="1341" x2="451" y2="1341" stroke="#16A34A" stroke-width="2.5" marker-end="url(#mGr)"/>
+
+  <!-- 过程检 -->
+  <g filter="url(#ds)">
+    <rect x="455" y="1286" width="340" height="110" rx="12" fill="#FFFFFF" stroke="#BBF7D0" stroke-width="1.5"/>
+  </g>
+  <path d="M 455 1298 A 12 12 0 0 1 467 1286 H 783 A 12 12 0 0 1 795 1298 Z" fill="#16A34A"/>
+  <rect x="757" y="1297" width="26" height="18" rx="9" fill="#F0FDF4"/>
+  <text x="770" y="1310" text-anchor="middle" class="tNum" fill="#16A34A">2</text>
+  <text x="625" y="1336" text-anchor="middle" class="tCard" fill="#166534">⚙️ 过程检</text>
+  <text x="625" y="1360" text-anchor="middle" class="tC1">生产工序过程检验</text>
+  <text x="625" y="1379" text-anchor="middle" class="tC2">触发：报工工序执行中</text>
+  <line x1="799" y1="1341" x2="831" y2="1341" stroke="#16A34A" stroke-width="2.5" marker-end="url(#mGr)"/>
+
+  <!-- 成品入库检 -->
+  <g filter="url(#ds)">
+    <rect x="835" y="1286" width="340" height="110" rx="12" fill="#FFFFFF" stroke="#BBF7D0" stroke-width="1.5"/>
+  </g>
+  <path d="M 835 1298 A 12 12 0 0 1 847 1286 H 1163 A 12 12 0 0 1 1175 1298 Z" fill="#16A34A"/>
+  <rect x="1137" y="1297" width="26" height="18" rx="9" fill="#F0FDF4"/>
+  <text x="1150" y="1310" text-anchor="middle" class="tNum" fill="#16A34A">3</text>
+  <text x="1005" y="1336" text-anchor="middle" class="tCard" fill="#166534">📦 成品入库检</text>
+  <text x="1005" y="1360" text-anchor="middle" class="tC1">成品完工入库检验</text>
+  <text x="1005" y="1379" text-anchor="middle" class="tC2">触发：成品入库前</text>
+  <line x1="1179" y1="1341" x2="1211" y2="1341" stroke="#16A34A" stroke-width="2.5" marker-end="url(#mGr)"/>
+
+  <!-- 出货检 -->
+  <g filter="url(#ds)">
+    <rect x="1215" y="1286" width="340" height="110" rx="12" fill="#FFFFFF" stroke="#BBF7D0" stroke-width="1.5"/>
+  </g>
+  <path d="M 1215 1298 A 12 12 0 0 1 1227 1286 H 1543 A 12 12 0 0 1 1555 1298 Z" fill="#16A34A"/>
+  <rect x="1517" y="1297" width="26" height="18" rx="9" fill="#F0FDF4"/>
+  <text x="1530" y="1310" text-anchor="middle" class="tNum" fill="#16A34A">4</text>
+  <text x="1385" y="1336" text-anchor="middle" class="tCard" fill="#166534">🚛 出货检</text>
+  <text x="1385" y="1360" text-anchor="middle" class="tC1">销售出货最终检验</text>
+  <text x="1385" y="1379" text-anchor="middle" class="tC2">触发：销售出库发货前</text>
+
+  <!-- 统计追溯卡 -->
+  <g filter="url(#ds)">
+    <rect x="75" y="1410" width="480" height="56" rx="10" fill="#F0FDF4" stroke="#BBF7D0"/>
+  </g>
+  <rect x="75" y="1410" width="5" height="56" rx="2" fill="#16A34A"/>
+  <text x="100" y="1444" font-size="12" font-weight="700" fill="#166534">🔎 产品信息追溯</text>
+  <text x="205" y="1444" font-size="11.5" fill="#475569">全链路批次追溯（原料 → 工序 → 成品）</text>
+
+  <g filter="url(#ds)">
+    <rect x="595" y="1410" width="480" height="56" rx="10" fill="#F0FDF4" stroke="#BBF7D0"/>
+  </g>
+  <rect x="595" y="1410" width="5" height="56" rx="2" fill="#16A34A"/>
+  <text x="620" y="1444" font-size="12" font-weight="700" fill="#166534">📊 批量质检统计</text>
+  <text x="725" y="1444" font-size="11.5" fill="#475569">按批次汇总合格率与不良分布</text>
+
+  <g filter="url(#ds)">
+    <rect x="1115" y="1410" width="480" height="56" rx="10" fill="#F0FDF4" stroke="#BBF7D0"/>
+  </g>
+  <rect x="1115" y="1410" width="5" height="56" rx="2" fill="#16A34A"/>
+  <text x="1140" y="1444" font-size="12" font-weight="700" fill="#166534">📈 单独质检统计</text>
+  <text x="1245" y="1444" font-size="11.5" fill="#475569">按单件产品汇总质检结果</text>
+
+  <!-- L4→L5 胶囊 -->
+  <rect x="750" y="1489" width="180" height="26" rx="13" fill="#E2E8F0"/>
+  <text x="840" y="1506" text-anchor="middle" class="tCap">检验合格 · 出入库 ▼</text>
+
+  <!-- ==================== L5 库存与经营统计 ==================== -->
+  <rect x="60" y="1528" width="200" height="28" rx="14" fill="#0D9488"/>
+  <text x="76" y="1547" class="tLbl">STEP 6 · 库存与经营统计</text>
+  <line x1="276" y1="1542" x2="1620" y2="1542" stroke="#CBD5E1" stroke-dasharray="4 4"/>
+  <text x="1620" y="1547" text-anchor="end" class="tHint">物料闭环 · 出入库流水 · 经营数据支撑</text>
+
+  <!-- 其他入库 -->
+  <g filter="url(#ds)">
+    <rect x="75" y="1568" width="240" height="90" rx="12" fill="#FFFFFF" stroke="#99F6E4" stroke-width="1.5"/>
+  </g>
+  <path d="M 75 1580 A 12 12 0 0 1 87 1568 H 303 A 12 12 0 0 1 315 1580 Z" fill="#0D9488"/>
+  <text x="195" y="1606" text-anchor="middle" class="tCard" fill="#0F766E">📥 其他入库</text>
+  <text x="195" y="1632" text-anchor="middle" class="tC1">成品 / 余料入库登记</text>
+
+  <!-- 销售出库 -->
+  <g filter="url(#ds)">
+    <rect x="335" y="1568" width="240" height="90" rx="12" fill="#FFFFFF" stroke="#99F6E4" stroke-width="1.5"/>
+  </g>
+  <path d="M 335 1580 A 12 12 0 0 1 347 1568 H 563 A 12 12 0 0 1 575 1580 Z" fill="#0D9488"/>
+  <text x="455" y="1606" text-anchor="middle" class="tCard" fill="#0F766E">🚚 销售出库</text>
+  <text x="455" y="1632" text-anchor="middle" class="tC1">成品销售发货出库</text>
+
+  <!-- 其他出库 -->
+  <g filter="url(#ds)">
+    <rect x="595" y="1568" width="240" height="90" rx="12" fill="#FFFFFF" stroke="#99F6E4" stroke-width="1.5"/>
+  </g>
+  <path d="M 595 1580 A 12 12 0 0 1 607 1568 H 823 A 12 12 0 0 1 835 1580 Z" fill="#0D9488"/>
+  <text x="715" y="1606" text-anchor="middle" class="tCard" fill="#0F766E">📤 其他出库</text>
+  <text x="715" y="1632" text-anchor="middle" class="tC1">领料 · 报废 · 调拨</text>
+
+  <!-- 汇流箭头 -->
+  <line x1="843" y1="1613" x2="963" y2="1613" stroke="#0D9488" stroke-width="3" marker-end="url(#mTe)"/>
+  <text x="903" y="1600" text-anchor="middle" font-size="10" fill="#0F766E">单据汇总</text>
+
+  <!-- 库存查询 -->
+  <g filter="url(#ds)">
+    <rect x="975" y="1568" width="290" height="90" rx="12" fill="#FFFFFF" stroke="#99F6E4" stroke-width="1.5"/>
+  </g>
+  <path d="M 975 1580 A 12 12 0 0 1 987 1568 H 1253 A 12 12 0 0 1 1265 1580 Z" fill="#0D9488"/>
+  <text x="1120" y="1606" text-anchor="middle" class="tCard" fill="#0F766E">📊 库存查询</text>
+  <text x="1120" y="1632" text-anchor="middle" class="tC1">实时库存 · 批次管理 · 出入库统计</text>
+  <line x1="1269" y1="1613" x2="1301" y2="1613" stroke="#0D9488" stroke-width="2.5" marker-end="url(#mTe)"/>
+
+  <!-- 库存预警 -->
+  <g filter="url(#ds)">
+    <rect x="1305" y="1568" width="270" height="90" rx="12" fill="#FFFFFF" stroke="#99F6E4" stroke-width="1.5"/>
+  </g>
+  <path d="M 1305 1580 A 12 12 0 0 1 1317 1568 H 1563 A 12 12 0 0 1 1575 1580 Z" fill="#0D9488"/>
+  <text x="1440" y="1606" text-anchor="middle" class="tCard" fill="#0F766E">⚠️ 库存预警</text>
+  <text x="1440" y="1632" text-anchor="middle" class="tC1">上下限预警 · 自动提醒</text>
+
+  <!-- 支撑卡 能耗 -->
+  <g filter="url(#ds)">
+    <rect x="75" y="1672" width="735" height="60" rx="10" fill="#F8FAFC" stroke="#E2E8F0"/>
+  </g>
+  <rect x="75" y="1672" width="5" height="60" rx="2" fill="#64748B"/>
+  <text x="100" y="1707" font-size="12.5" font-weight="700" fill="#475569">⚡ 能耗管理</text>
+  <text x="190" y="1707" font-size="11.5" fill="#64748B">能耗记录 · 费用设置 · 初始能耗（水电气登记与费用核算）</text>
+
+  <!-- 支撑卡 数据采集 -->
+  <g filter="url(#ds)">
+    <rect x="845" y="1672" width="730" height="60" rx="10" fill="#F8FAFC" stroke="#E2E8F0"/>
+  </g>
+  <rect x="845" y="1672" width="5" height="60" rx="2" fill="#64748B"/>
+  <text x="870" y="1707" font-size="12.5" font-weight="700" fill="#475569">📊 数据采集</text>
+  <text x="960" y="1707" font-size="11.5" fill="#64748B">数据分组 · 数据管理 · 数据记录 · 加料记录（生产过程数据采集）</text>
+
+  <!-- ==================== 图例 ==================== -->
+  <g filter="url(#ds)">
+    <rect x="60" y="1752" width="1560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0"/>
+  </g>
+  <text x="80" y="1782" class="tLgT">图例说明</text>
+
+  <circle cx="96" cy="1804" r="6" fill="#7C3AED"/><text x="110" y="1808" class="tLg">系统管理</text>
+  <circle cx="256" cy="1804" r="6" fill="#2563EB"/><text x="270" y="1808" class="tLg">产品管理</text>
+  <circle cx="416" cy="1804" r="6" fill="#0891B2"/><text x="430" y="1808" class="tLg">工序管理</text>
+  <circle cx="576" cy="1804" r="6" fill="#4F46E5"/><text x="590" y="1808" class="tLg">生产执行</text>
+  <circle cx="736" cy="1804" r="6" fill="#EA580C"/><text x="750" y="1808" class="tLg">设备管理</text>
+  <circle cx="896" cy="1804" r="6" fill="#D97706"/><text x="910" y="1808" class="tLg">保养点检</text>
+  <circle cx="1056" cy="1804" r="6" fill="#16A34A"/><text x="1070" y="1808" class="tLg">质量检验</text>
+  <circle cx="1216" cy="1804" r="6" fill="#0D9488"/><text x="1230" y="1808" class="tLg">库存物流</text>
+  <circle cx="1376" cy="1804" r="6" fill="#64748B"/><text x="1390" y="1808" class="tLg">运营支撑</text>
+
+  <line x1="92" y1="1838" x2="132" y2="1838" stroke="#94A3B8" stroke-width="2" marker-end="url(#mG)"/>
+  <text x="142" y="1842" class="tLg">流程顺序 —— 按箭头方向先后执行</text>
+  <line x1="452" y1="1838" x2="492" y2="1838" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#mG)"/>
+  <text x="502" y="1842" class="tLg">数据依赖 —— 引用基础数据层配置</text>
+  <circle cx="872" cy="1838" r="8" fill="#7C3AED"/><text x="872" y="1842" text-anchor="middle" class="tSn">1</text>
+  <text x="888" y="1842" class="tLg">步骤序号 —— 模块内链式步骤</text>
+  <rect x="1350" y="1826" width="210" height="24" rx="12" fill="#F5F3FF"/>
+  <text x="1455" y="1842" text-anchor="middle" font-size="11" fill="#6D28D9">总原则：先配置 · 后业务</text>
+
+  <!-- 页脚 -->
+  <text x="840" y="1898" text-anchor="middle" font-size="11.5" fill="#94A3B8">涂装行业 MES 系统 · 12 大模块 · 40+ 功能页面 · 纯前端原型 · GitHub Pages 静态部署</text>
+</svg>
 
 
 
