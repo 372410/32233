@@ -28,7 +28,7 @@
 - [涂装MES生产管理系统操作手册](./docs/涂装MES生产管理系统操作手册.docx)
 - [系统流程图]
 
-![MES 系统业务流程图](./docs/mes-flow-diagram.svg)
+![MES 系统业务流程图](./docs/MES系统流程图.svg)
 
 
 
