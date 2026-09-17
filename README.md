@@ -39,6 +39,7 @@
 4. **烘干固化段**：预烘干→固化→下件，漆膜固化成型
 <p align="center">
 <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/工厂涂装业务ABC线.png" width="720" alt="工厂涂装业务ABC线">
+<img src="../screenshot/工厂涂装业务ABC线.png" width="720" alt="工厂涂装业务ABC线流程图">
 
 > 涂装完整工艺说明见 [涂装工艺说明](涂装工艺说明.md)
 
