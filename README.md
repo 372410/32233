@@ -28,9 +28,7 @@
 - [项目流程交付文件集](./docs/PDF.md)
 - [涂装MES生产管理系统操作手册](./docs/涂装MES生产管理系统操作手册.docx)
 - [系统流程图]
-
 ![MES 系统业务流程图](./docs/MES系统流程图.svg)
-<img width="1680" height="1930" alt="MES系统流程图" src="https://github.com/user-attachments/assets/581327f8-d666-4a25-bc92-06cd961172ff" />
 
 
 ## 🧪涂装工艺说明
