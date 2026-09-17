@@ -40,6 +40,7 @@
 <p align="center">
 <img src="https://cdn.jsdelivr.net/gh/372410/32233@main/screenshot/涂装工艺流程.png" width="720" alt="涂装工艺流程">
 </p>
+
 > 涂装完整工艺说明见 [涂装工艺说明](涂装工艺说明.md)
 
 ## ✨ 核心界面精选
