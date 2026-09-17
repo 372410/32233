@@ -21,7 +21,7 @@
 <img width="3400" height="3300" alt="mes-module-mind" src="https://github.com/user-attachments/assets/84cf9c3a-2d77-4f14-8d28-3acff236efa1" />
 
 ## 📁项目交付物
-> [交付文档文件夹](./deliverable/)
+> [交付文档文件夹]
 - [系统界面截图集](./screenshot/screenshot.md)
 - [工艺流转卡.PDF下载](https://raw.githubusercontent.com/372410/32233/main/docs/工艺流转卡.pdf)
 - [项目流程交付文件集](./docs/PDF.md)
