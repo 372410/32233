@@ -25,7 +25,7 @@
 - [系统界面截图集](./screenshot/screenshot.md)
 - [工艺流转卡.PDF下载](https://raw.githubusercontent.com/372410/32233/main/docs/工艺流转卡.pdf)
 - [项目流程交付文件集](./docs/PDF.md)
-- [系统流程图](./docs/涂装MES生产管理系统操作手册.docx)
+- [涂装MES生产管理系统操作手册](./docs/涂装MES生产管理系统操作手册.docx)
 - [系统流程图]
 
 
